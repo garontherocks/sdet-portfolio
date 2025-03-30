@@ -11,5 +11,12 @@ export const users = {
     firstName: 'Martin',
     lastName: 'QA',
     postalCode: '1234'
+  },
+  apiCreateUser: {
+    name: 'John',
+    job: 'SDET'
+  },
+  apiLoginMissingPassword: {
+    email: 'john@smith'
   }
 };
