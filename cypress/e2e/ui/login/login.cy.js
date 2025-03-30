@@ -1,4 +1,4 @@
-import { LoginPage } from '../../../support/page-objects/LoginPage';
+import { LoginPage } from '../../../page-objects/LoginPage';
 import { users } from '../../../test-data/users';
 
 const loginPage = new LoginPage();

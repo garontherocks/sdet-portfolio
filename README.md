@@ -9,13 +9,16 @@ While the initial focus is on UI and API testing, the project is structured to g
 ```
 sdet-portfolio/
 ├── cypress/
-│   ├── e2e/                  # End-to-end test specs
-│   ├── fixtures/             # Test data (e.g. login credentials)
-│   ├── page-objects/         # Page Object Model structure
-│   └── support/              # Custom commands, setup logic
-├── cypress.config.js         # Cypress configuration
-├── package.json              # Project metadata and dependencies
-└── README.md                 # Project documentation (this file)
+│   ├── e2e/                           # End-to-end test specs
+│   │   └── api/                       # API-related tests
+│   │   └── ui/
+│   │       └── login/                 # Login-related tests
+│   ├── page-objects/                  # Page Object Model structure
+│   ├── support/                       # Custom commands, setup logic
+│   └── test-data/                     # Test data (e.g. login credentials)
+├── cypress.config.js                  # Cypress configuration
+├── package.json                       # Project metadata and dependencies
+└── README.md                          # Project documentation (this file)
 ```
 
 ## What’s Covered
