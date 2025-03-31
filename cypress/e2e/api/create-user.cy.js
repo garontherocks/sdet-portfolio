@@ -1,4 +1,4 @@
-import { users } from '../../../test-data/users';
+import { users } from '../../test-data/users';
 
 describe('ReqRes API - Create User', () => {
   const { apiCreateUser } = users;
