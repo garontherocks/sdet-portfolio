@@ -17,8 +17,14 @@ sdet-portfolio/
 │   ├── page-objects/                  # Page Object Model structure
 │   ├── support/                       # Custom commands, setup logic
 │   └── test-data/                     # Test data (e.g. login credentials)
+├── playwright/
+│   ├── tests/                         # End-to-end test specs
+│   ├── page-objects/                  # Page Object Model structure
+│   ├── playwright.config.ts           # Playwright configuration
+│   ├── package.json                   # Playwright dependencies and scripts
+│   └── tsconfig.json                  # TypeScript configuration for Playwright
 ├── cypress.config.js                  # Cypress configuration
-├── package.json                       # Project metadata and dependencies
+├── package.json                       # Project metadata and Cypress dependencies
 └── README.md                          # Project documentation (this file)
 ```
 
@@ -31,6 +37,7 @@ sdet-portfolio/
 - Assertions on login feedback and UI elements
 - API validation tests
 - Cart functionality coverage (add, remove, total, checkout)
+- Initial Playwright login flow using POM
 
 ## Getting Started
 
@@ -53,11 +60,38 @@ npm install
 npx cypress open
 ```
 
-### Run Tests (Headless)
+### Run Tests (Cypress Headless)
 
 ```bash
 npx cypress run
 ```
+
+### Run Tests (Playwright)
+
+Navigate to the Playwright folder:
+
+```bash
+cd playwright
+```
+
+Install required browsers:
+
+```bash
+npx playwright install
+```
+
+Run tests in headless mode:
+
+```bash
+npx playwright test
+```
+
+Run tests in headed (UI) mode:
+
+```bash
+npx playwright test --headed
+```
+
 ## Design Principles
 
 - Test code is organized by feature (e.g. login, cart)
