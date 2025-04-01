@@ -1,0 +1,17 @@
+{
+  "name": "playwright-tests",
+  "version": "1.0.0",
+  "description": "UI tests for SauceDemo using Playwright + TypeScript as part of the SDET Portfolio project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright show-report"
+  },
+  "author": "Víctor Martín Aller",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.14"
+  }
+}
