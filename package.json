@@ -1,31 +1,9 @@
 {
   "name": "sdet-portfolio",
   "version": "1.0.0",
-  "description": "This is my public SDET portfolio project built with JavaScript and Cypress, and TypeScript with Playwright, targeting the demo website SauceDemo.",
-  "main": "cypress.config.js",
- "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/garontherocks/sdet-portfolio.git"
-  },
-  "keywords": [
+  "private": true,
+  "workspaces": [
     "cypress",
-    "qa",
-    "automation",
-    "testing",
-    "e2e",
-    "portfolio"
-  ],
-  "author": "Victor",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/garontherocks/sdet-portfolio/issues"
-  },
-  "homepage": "https://github.com/garontherocks/sdet-portfolio#readme",
-  "devDependencies": {
-    "cypress": "^14.2.1"
-  }
+    "playwright"
+  ]
 }

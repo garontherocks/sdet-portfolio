@@ -10,7 +10,7 @@ module.exports = defineConfig({
         }
       });
     },
-    specPattern: 'cypress/e2e/**/*.cy.js',
-    supportFile: 'cypress/support/e2e.js'
+    specPattern: 'e2e/**/*.cy.js',
+    supportFile: 'support/e2e.js'
   }
 });

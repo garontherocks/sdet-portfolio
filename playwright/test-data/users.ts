@@ -6,5 +6,9 @@ export const users = {
   lockedOut: {
     username: 'locked_out_user',
     password: 'secret_sauce',
+  },
+  apiCreateUser: {
+    name: 'John',
+    job: 'SDET'
   }
 };

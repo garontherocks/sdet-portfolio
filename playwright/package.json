@@ -1,7 +1,7 @@
 {
   "name": "playwright-tests",
   "version": "1.0.0",
-  "description": "UI tests for SauceDemo using Playwright + TypeScript as part of the SDET Portfolio project.",
+  "description": "UI and API tests for SauceDemo using Playwright + TypeScript as part of the SDET Portfolio project.",
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
