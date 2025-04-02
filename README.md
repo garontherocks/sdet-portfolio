@@ -18,26 +18,25 @@ sdet-portfolio/
 │   ├── support/                       # Custom commands, setup logic
 │   └── test-data/                     # Test data (e.g. login credentials)
 ├── playwright/
-│   ├── tests/                         # End-to-end test specs
+│   ├── e2e/                           # End-to-end test specs
+│   │   ├── api/                       # API-related tests
+│   │   └── ui/
+│   │       ├── cart/                  # Cart-related tests
+│   │       └── login/                 # Login-related tests
 │   ├── page-objects/                  # Page Object Model structure
-│   ├── playwright.config.ts           # Playwright configuration
-│   ├── package.json                   # Playwright dependencies and scripts
-│   └── tsconfig.json                  # TypeScript configuration for Playwright
-├── cypress.config.js                  # Cypress configuration
-├── package.json                       # Project metadata and Cypress dependencies
+│   └── test-data/                     # Test data (e.g. login credentials)
 └── README.md                          # Project documentation (this file)
 ```
 
 ## What’s Covered
 
-- Login flow (valid and invalid credentials)
+- Cypress Login flow (valid and invalid credentials)
+- Cypress Cart functionality coverage (add, remove, total, checkout)
+- Cypress API validation tests
+- Initial Playwright Login flow and API test
 - Page Object Model (POM) architecture
-- Custom Cypress commands
 - Test data separation
 - Assertions on login feedback and UI elements
-- API validation tests
-- Cart functionality coverage (add, remove, total, checkout)
-- Initial Playwright login flow using POM
 
 ## Getting Started
 
@@ -57,39 +56,19 @@ npm install
 ### Run Tests (Cypress GUI)
 
 ```bash
-npx cypress open
+npm run open --workspace=cypress
 ```
 
 ### Run Tests (Cypress Headless)
 
 ```bash
-npx cypress run
+npm run run --workspace=cypress
 ```
 
-### Run Tests (Playwright)
-
-Navigate to the Playwright folder:
+### Run Tests (Playwright Headless)
 
 ```bash
-cd playwright
-```
-
-Install required browsers:
-
-```bash
-npx playwright install
-```
-
-Run tests in headless mode:
-
-```bash
-npx playwright test
-```
-
-Run tests in headed (UI) mode:
-
-```bash
-npx playwright test --headed
+npm run test --workspace=playwright
 ```
 
 ## Design Principles

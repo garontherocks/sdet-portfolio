@@ -1,24 +1,28 @@
 # Node.js
 node_modules/
-package-lock.json
-
-# Cypress
-cypress/screenshots/
-cypress/videos/
-
-# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
-# VS Code settings
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
+# Playwright
+playwright/test-results/
+playwright/report/
+playwright/.cache/
+playwright/playwright-report/
+playwright/.playwright/
+
+# VS Code
 .vscode/
 
-# OS-specific
+# macOS
 .DS_Store
-Thumbs.db
 
-# Environment / temp
-.env
-.env.local
-*.log
+# IDEs
+.idea/
+*.sw?

@@ -1,0 +1,16 @@
+{
+    "name": "cypress-tests",
+    "version": "1.0.0",
+    "description": "UI and API tests for SauceDemo using Cypress + JavaScript as part of the SDET Portfolio project.",
+    "main": "cypress.config.js",
+    "scripts": {
+      "open": "cypress open",
+      "run": "cypress run"
+    },
+    "author": "Víctor Martín Aller",
+    "license": "MIT",
+    "devDependencies": {
+      "cypress": "^14.2.1"
+    }
+  }
+  
