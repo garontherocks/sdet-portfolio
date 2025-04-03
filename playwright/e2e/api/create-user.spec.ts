@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { users } from '../../test-data/users';
 
-test.describe('ReqRes API - Create User', () => {
-    const { apiCreateUser } = users;
+const { apiCreateUser } = users;
+
+test.describe('ReqRes API - Create User', () => {    
   test('should create a new user successfully', async ({ request }) => {
     const response = await request.post('https://reqres.in/api/users', {
       data: {

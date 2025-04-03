@@ -1,8 +1,8 @@
 import { users } from '../../test-data/users';
 
-describe('ReqRes API - Login Negative', () => {
-  const { apiLoginMissingPassword } = users;
+const { apiLoginMissingPassword } = users;
 
+describe('ReqRes API - Login Negative', () => {
   it('should return 400 if password is missing', () => {
     cy.request({
       method: 'POST',

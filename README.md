@@ -15,7 +15,7 @@ sdet-portfolio/
 │   │       ├── cart/                  # Cart-related tests
 │   │       └── login/                 # Login-related tests
 │   ├── page-objects/                  # Page Object Model structure
-│   ├── support/                       # Custom commands, setup logic
+│   ├── support/                       # Setup logic
 │   └── test-data/                     # Test data (e.g. login credentials)
 ├── playwright/
 │   ├── e2e/                           # End-to-end test specs
@@ -30,10 +30,8 @@ sdet-portfolio/
 
 ## What’s Covered
 
-- Cypress Login flow (valid and invalid credentials)
-- Cypress Cart functionality coverage (add, remove, total, checkout)
-- Cypress API validation tests
-- Initial Playwright Login flow and API test
+- Cypress Login flow (valid/invalid), Cart functionality coverage (add, remove, total, checkout) and API validation tests
+- Playwright Login flow (valid/invalid), Cart functionality coverage (add, remove, total, checkout) and API validation tests
 - Page Object Model (POM) architecture
 - Test data separation
 - Assertions on login feedback and UI elements
