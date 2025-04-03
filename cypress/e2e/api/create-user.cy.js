@@ -1,8 +1,8 @@
 import { users } from '../../test-data/users';
 
-describe('ReqRes API - Create User', () => {
-  const { apiCreateUser } = users;
+const { apiCreateUser } = users;
 
+describe('ReqRes API - Create User', () => {
   it('should create a new user successfully', () => {
     cy.request({
       method: 'POST',
