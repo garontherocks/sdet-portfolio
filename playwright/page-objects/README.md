@@ -26,7 +26,3 @@ Handles interactions with the shopping cart, checkout process, and confirmation.
 - Filling the checkout form
 - Completing the purchase
 - Validating cart totals and confirmation message
-
----
-
-> Each test imports and uses these objects to interact with the application instead of directly calling selectors or Cypress commands.
