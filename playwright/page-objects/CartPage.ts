@@ -18,7 +18,7 @@ export class CartPage {
   }
 
   async assertProductInCart(productName: string) {
-    await expect(this.page.locator('.inventory_item_name')).toHaveText(productName);
+    await expect(this.page.locator('.inventory_item_name', { hasText: productName })).toBeVisible();
   }
 
   async assertProductNotInCart(productName: string) {
