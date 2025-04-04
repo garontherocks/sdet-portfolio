@@ -1,11 +1,11 @@
-const { defineConfig } = require('cypress');
+import { defineConfig } from 'cypress';
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
     baseUrl: 'https://www.saucedemo.com',
-    setupNodeEvents(on, config) {
+    setupNodeEvents(on, _config) {
       on('task', {
-        log(message) {
+        log(_message) {
           return null;
         }
       });
