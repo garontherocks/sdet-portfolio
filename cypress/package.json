@@ -1,6 +1,7 @@
 {
     "name": "cypress-tests",
     "version": "1.0.0",
+    "type": "module",
     "description": "UI and API tests for SauceDemo using Cypress + JavaScript as part of the SDET Portfolio project.",
     "main": "cypress.config.js",
     "scripts": {

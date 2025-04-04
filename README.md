@@ -2,43 +2,34 @@
 
 ![Cypress Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/cypress-tests.yml/badge.svg)
 ![Playwright Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/playwright-tests.yml/badge.svg)
+![Lint Status](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml/badge.svg)
 
-This is my public SDET portfolio project built with JavaScript using [Cypress](https://www.cypress.io/), and TypeScript using [Playwright](https://playwright.dev/), targeting the demo website [SauceDemo](https://www.saucedemo.com/). The goal is to showcase best practices in UI and API automation testing for potential employers and collaborators.
-
-While the initial focus is on UI and API testing, the project is structured to grow and include performance, stress, visual testing and reporting in future updates.
+This public SDET portfolio demonstrates best practices using [Cypress](https://www.cypress.io/) with JavaScript, and [Playwright](https://playwright.dev/) with TypeScript. Tests target the demo website [SauceDemo](https://www.saucedemo.com/) and cover UI and API automation workflows. The project evolves iteratively to include performance, stress, visual testing, reporting, and CI/CD.
 
 ## Project Structure
 
 ```
 sdet-portfolio/
 ├── cypress/
-│   ├── e2e/                           # End-to-end test specs
-│   │   ├── api/                       # API-related tests
-│   │   └── ui/
-│   │       ├── cart/                  # Cart-related tests
-│   │       └── login/                 # Login-related tests
-│   ├── page-objects/                  # Page Object Model structure
-│   ├── support/                       # Setup logic
-│   └── test-data/                     # Test data (e.g. login credentials)
+│   ├── e2e/                           # UI & API test specs (Cypress)
+│   ├── page-objects/                  # Page Object Model
+│   ├── support/                       # Custom logic and setup
+│   └── test-data/                     # Reusable test data
 ├── playwright/
-│   ├── e2e/                           # End-to-end test specs
-│   │   ├── api/                       # API-related tests
-│   │   └── ui/
-│   │       ├── cart/                  # Cart-related tests
-│   │       └── login/                 # Login-related tests
-│   ├── page-objects/                  # Page Object Model structure
-│   └── test-data/                     # Test data (e.g. login credentials)
+│   ├── e2e/                           # UI & API test specs (Playwright)
+│   ├── page-objects/                  # Page Object Model
+│   └── test-data/                     # Reusable test data
+├── .github/workflows/                 # GitHub Actions CI pipelines
 └── README.md                          # Project documentation (this file)
 ```
 
 ## What’s Covered
 
-- Cypress Login flow (valid/invalid), Cart functionality coverage (add, remove, total, checkout) and API validation tests
-- Playwright Login flow (valid/invalid), Cart functionality coverage (add, remove, total, checkout) and API validation tests
-- GitHub Actions integration for Cypress and Playwright (runs on every push & PR)
-- Page Object Model (POM) architecture
-- Test data separation
-- Assertions on login feedback and UI elements
+- Full coverage for login, cart, and API flows (Cypress & Playwright)
+- Page Object Model architecture
+- Centralized, reusable test data
+- CI pipelines for Cypress, Playwright, and ESLint
+- Pre-commit validation using Husky + lint-staged
 
 ## Getting Started
 
@@ -47,7 +38,7 @@ sdet-portfolio/
 - Node.js (v18+ recommended)
 - npm or yarn
 
-### Installation
+### Install Dependencies
 
 ```bash
 git clone https://github.com/garontherocks/sdet-portfolio.git
@@ -55,38 +46,31 @@ cd sdet-portfolio
 npm install
 ```
 
-### Run Tests (Cypress GUI)
+### Run Tests
 
 ```bash
-npm run open --workspace=cypress
+npm run open --workspace=cypress        # Cypress UI mode
+npm run run --workspace=cypress         # Cypress headless
+npm run test --workspace=playwright     # Playwright headless
 ```
 
-### Run Tests (Cypress Headless)
+## Code Quality & Linting
+
+- ESLint checks run locally and in CI (GitHub Actions).
+- Pre-commit hooks automatically fix staged issues with lint-staged.
+
+Run manually:
 
 ```bash
-npm run run --workspace=cypress
+npm run lint                            # Analyze all .js and .ts files
+npm run lint:fix                        # Auto-fix fixable issues
 ```
+## Practices & Structure
 
-### Run Tests (Playwright Headless)
-
-```bash
-npm run test --workspace=playwright
-```
-
-## Design Principles
-
-- Test code is organized by feature (e.g. login, cart)
-- Page Object Model (POM) abstracts UI interactions
-- Test data is centralized in reusable modules
-- File names and folder structure follow consistent conventions
-
-## Best Practices Demonstrated
-
-- Modular folder structure
-- Use of POM for reusability and readability
-- Clear test case naming and separation of concerns
-- Readable, self-contained specs
-- Avoiding hardcoded values via centralized test data
+- Feature-based folder organization (login, cart, etc.)
+- Clean Page Object Model abstraction
+- DRY test logic via reusable data and utilities
+- Clear test naming and assertions
 
 ## Roadmap
 
@@ -101,7 +85,7 @@ This portfolio is being developed iteratively to showcase practical skills and g
 
 ### Phase 2 – CI/CD, Reporting and Tooling (In Progress)
 
-- ✅ GitHub Actions integration for Cypress and Playwright (triggered on every push and pull request).
+- ✅ GitHub Actions integration for Cypress, Playwright, and Linting (triggered on every push and pull request).
 - Integration with Allure for test reporting.
 - Visual testing setup with Percy.
 - Performance testing using Lighthouse CI.
