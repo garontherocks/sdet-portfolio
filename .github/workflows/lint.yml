@@ -19,9 +19,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-      
-      - name: Install Husky manually
-        run: npx husky install
 
       - name: Run ESLint
         run: npm run lint
