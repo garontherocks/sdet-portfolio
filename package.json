@@ -9,10 +9,12 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "lhci": "lhci autorun"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
+    "@lhci/cli": "^0.14.0",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "allure-commandline": "^2.33.0",
     "eslint": "^9.23.0",

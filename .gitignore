@@ -29,3 +29,6 @@ playwright/allure-report/
 # IDEs
 .idea/
 *.sw?
+
+# Lighthouse
+.lighthouseci/
