@@ -1,8 +1,6 @@
 name: Playwright Tests
 
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   playwright-run:
@@ -13,19 +11,30 @@ jobs:
         working-directory: playwright
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm install
+      - run: npm install
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: npx playwright test
+      - name: Run Playwright tests with Allure
+        run: npx playwright test --reporter=list,allure-playwright
+
+      - name: Generate Allure HTML report
+        run: npx allure generate allure-results -o allure-report --clean
+
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-allure-results
+          path: allure-results
+
+      - name: Upload Allure HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-allure-html
+          path: allure-report

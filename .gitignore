@@ -9,6 +9,7 @@ package-lock.json
 cypress/videos/
 cypress/screenshots/
 cypress/downloads/
+cypress/reports/
 
 # Playwright
 playwright/test-results/
@@ -16,6 +17,8 @@ playwright/report/
 playwright/.cache/
 playwright/playwright-report/
 playwright/.playwright/
+playwright/allure-results/
+playwright/allure-report/
 
 # VS Code
 .vscode/

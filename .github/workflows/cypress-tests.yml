@@ -26,3 +26,9 @@ jobs:
 
       - name: Run Cypress tests
         run: npx cypress run
+
+      - name: Upload Mochawesome report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-mochawesome-report
+          path: cypress/reports/mochawesome
