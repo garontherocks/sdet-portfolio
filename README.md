@@ -157,13 +157,20 @@ This portfolio is being developed iteratively to showcase practical skills and g
 - ✅ Centralized Page Object Model architecture and reusable test data.
 - ✅ Project organized using npm workspaces.
 
-### Phase 2 – CI/CD, Reporting and Tooling (In Progress)
+### Phase 2 – CI/CD, Reporting and Tooling (Completed)
 
 - ✅ GitHub Actions integration for Cypress, Playwright, and Linting (triggered on every push and pull request).
 - ✅ Integration with Mochawesome (Cypress) and Allure (Playwright) for test reporting.
 - ✅ Performance testing using Lighthouse CI.
 - ✅ Visual testing setup with Percy.
-- Load/stress testing with k6 or Gatling.
+- ✅ Load/stress testing with k6.
+
+### Phase 3 – Orchestration & Continuous Quality (In Progress)
+
+- Report Centralization
+- Pipeline Improvements
+- Notifications & Insights
+- Pull Request Validation
 
 ## License
 
