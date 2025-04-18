@@ -5,13 +5,17 @@
     "description": "UI and API tests for SauceDemo using Cypress + JavaScript as part of the SDET Portfolio project.",
     "main": "cypress.config.js",
     "scripts": {
-      "open": "cypress open",
-      "run": "cypress run"
+        "open": "cypress open",
+        "run": "cypress run",
+        "report:merge": "npx mochawesome-merge reports/mochawesome/*.json -o reports/mochawesome/merged.json",
+        "report:gen": "npx marge reports/mochawesome/merged.json -o reports/mochawesome/html"
     },
     "author": "Víctor Martín Aller",
     "license": "MIT",
     "devDependencies": {
-      "cypress": "^14.2.1"
+        "cypress": "^14.2.1",
+        "mochawesome": "^7.1.3",
+        "mochawesome-merge": "^5.0.0",
+        "mochawesome-report-generator": "^6.2.0"
     }
-  }
-  
+}
