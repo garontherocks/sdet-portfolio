@@ -80,15 +80,21 @@ npm run test --workspace=playwright     # Playwright headless
 - Reports are uploaded to temporary Google Cloud links (printed in terminal)  
 - Configuration via `lighthouserc.js`
 
-## Visual Testing (Percy + Cypress)
+## Visual Testing (Percy)
 
-- Percy integration enabled for Cypress test cases.
-- Visual snapshots are taken using cy.percySnapshot().
+- Percy integration enabled for Cypress and Playwright test cases.
+- Visual snapshots are taken using percySnapshot().
 - Requires valid PERCY_TOKEN in CI (configured in GitHub Secrets).
-- Run visual tests locally or in CI:
+- Run visual tests locally (Cypress):
 
 ```bash
 npx percy exec -- npx cypress run
+```
+
+- Run visual tests locally (Playwright):
+
+```bash
+npm run percy:playwright --workspace=playwright
 ```
 
 - Percy build results are available at [percy.io](https://percy.io)
@@ -141,7 +147,7 @@ This portfolio is being developed iteratively to showcase practical skills and g
 - ✅ GitHub Actions integration for Cypress, Playwright, and Linting (triggered on every push and pull request).
 - ✅ Integration with Mochawesome (Cypress) and Allure (Playwright) for test reporting.
 - ✅ Performance testing using Lighthouse CI.
-- ✅ Visual testing setup with Percy + Cypress (Playwright in progress).
+- ✅ Visual testing setup with Percy.
 - Load/stress testing with k6 or Gatling.
 
 ## License
