@@ -3,6 +3,7 @@
 ![Cypress Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/cypress-tests.yml/badge.svg)
 ![Playwright Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/playwright-tests.yml/badge.svg)
 ![Lint Status](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml/badge.svg)
+![Lighthouse Audit](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lighthouse.yml/badge.svg)
 
 This public SDET portfolio demonstrates best practices using [Cypress](https://www.cypress.io/) with JavaScript, and [Playwright](https://playwright.dev/) with TypeScript. Tests target the demo website [SauceDemo](https://www.saucedemo.com/) and cover UI and API automation workflows. The project evolves iteratively to include performance, stress, visual testing, reporting, and CI/CD.
 
@@ -71,6 +72,14 @@ npm run test --workspace=playwright     # Playwright headless
 - `npm run allure:generate --workspace=playwright`  
 - `npm run allure:open     --workspace=playwright`  
 
+### Lighthouse CI (Performance Testing)
+![Lighthouse](https://img.shields.io/badge/report-lighthouse-yellow)
+
+- `npm run lhci`  
+- Lighthouse analyzes the public site [SauceDemo](https://www.saucedemo.com)  
+- Reports are uploaded to temporary Google Cloud links (printed in terminal)  
+- Configuration via `lighthouserc.js`
+
 ## Code Quality & Linting
 
 - ESLint checks run locally and in CI (GitHub Actions).
@@ -103,9 +112,9 @@ This portfolio is being developed iteratively to showcase practical skills and g
 ### Phase 2 – CI/CD, Reporting and Tooling (In Progress)
 
 - ✅ GitHub Actions integration for Cypress, Playwright, and Linting (triggered on every push and pull request).
-- Integration with Allure for test reporting.
+- ✅ Integration with Mochawesome (Cypress) and Allure (Playwright) for test reporting.
+- ✅ Performance testing using Lighthouse CI.
 - Visual testing setup with Percy.
-- Performance testing using Lighthouse CI.
 - Load/stress testing with k6 or Gatling.
 
 ## License
