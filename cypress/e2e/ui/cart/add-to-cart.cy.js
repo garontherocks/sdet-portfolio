@@ -18,6 +18,6 @@ describe('Cart UI - Add to Cart', () => {
     cartPage.addFirstProductToCart();
     cartPage.goToCart();
     cartPage.assertProductInCart(productA);
-    cy.percySnapshot('Products in cart');
+    cy.percySnapshot('Products in cart snapshot');
   });
 });
