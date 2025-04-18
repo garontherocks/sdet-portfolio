@@ -1,11 +1,11 @@
-name: Cypress Tests
+name: Percy Visual Tests (Cypress)
 
 on:
   push:
   pull_request:
 
 jobs:
-  cypress-run:
+  percy-cypress:
     runs-on: ubuntu-latest
 
     defaults:
@@ -27,11 +27,7 @@ jobs:
           npm install @percy/cli
           npm install @percy/cypress
 
-      - name: Run Cypress tests
-        run: npx cypress run
-
-      - name: Upload Mochawesome report
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-mochawesome-report
-          path: cypress/reports/mochawesome
+      - name: Run Cypress tests with Percy
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+        run: npx percy exec -- npx cypress run

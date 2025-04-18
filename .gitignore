@@ -32,3 +32,6 @@ playwright/allure-report/
 
 # Lighthouse
 .lighthouseci/
+
+# Percy
+.percy/

@@ -8,7 +8,8 @@
         "open": "cypress open",
         "run": "cypress run",
         "report:merge": "npx mochawesome-merge reports/mochawesome/*.json -o reports/mochawesome/merged.json",
-        "report:gen": "npx marge reports/mochawesome/merged.json -o reports/mochawesome/html"
+        "report:gen": "npx marge reports/mochawesome/merged.json -o reports/mochawesome/html",
+        "percy:exec": "percy exec -- cypress run"
     },
     "author": "Víctor Martín Aller",
     "license": "MIT",

@@ -80,6 +80,19 @@ npm run test --workspace=playwright     # Playwright headless
 - Reports are uploaded to temporary Google Cloud links (printed in terminal)  
 - Configuration via `lighthouserc.js`
 
+## Visual Testing (Percy + Cypress)
+
+- Percy integration enabled for Cypress test cases.
+- Visual snapshots are taken using cy.percySnapshot().
+- Requires valid PERCY_TOKEN in CI (configured in GitHub Secrets).
+- Run visual tests locally or in CI:
+
+```bash
+npx percy exec -- npx cypress run
+```
+
+- Percy build results are available at [percy.io](https://percy.io)
+
 ## Code Quality & Linting
 
 - ESLint checks run locally and in CI (GitHub Actions).
@@ -91,12 +104,26 @@ Run manually:
 npm run lint                            # Analyze all .js and .ts files
 npm run lint:fix                        # Auto-fix fixable issues
 ```
+
 ## Practices & Structure
 
 - Feature-based folder organization (login, cart, etc.)
 - Clean Page Object Model abstraction
 - DRY test logic via reusable data and utilities
 - Clear test naming and assertions
+
+## Tooling Overview
+
+| Tool        | Purpose                     |
+|-------------|-----------------------------|
+| Cypress     | UI + API testing            |
+| Playwright  | UI + API testing            |
+| Allure      | Test reporting (Playwright) |
+| Mochawesome | Test reporting (Cypress)    |
+| Lighthouse  | Performance audits          |
+| Percy       | Visual regression testing   |
+| ESLint      | Code quality                |
+| Husky       | Pre-commit enforcement      |
 
 ## Roadmap
 
@@ -114,7 +141,7 @@ This portfolio is being developed iteratively to showcase practical skills and g
 - ✅ GitHub Actions integration for Cypress, Playwright, and Linting (triggered on every push and pull request).
 - ✅ Integration with Mochawesome (Cypress) and Allure (Playwright) for test reporting.
 - ✅ Performance testing using Lighthouse CI.
-- Visual testing setup with Percy.
+- ✅ Visual testing setup with Percy + Cypress (Playwright in progress).
 - Load/stress testing with k6 or Gatling.
 
 ## License
