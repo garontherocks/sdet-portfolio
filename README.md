@@ -99,6 +99,20 @@ npm run percy:playwright --workspace=playwright
 
 - Percy build results are available at [percy.io](https://percy.io)
 
+## 🚀 Performance Testing (k6)
+
+k6 integration enabled for load and smoke testing.
+
+Performance test scripts are stored under `playwright/performance`.
+
+Run manually:
+
+```bash
+k6 run performance/smoke.test.js
+```
+
+Executed automatically via GitHub Actions on push/PR.
+
 ## Code Quality & Linting
 
 - ESLint checks run locally and in CI (GitHub Actions).
@@ -130,6 +144,7 @@ npm run lint:fix                        # Auto-fix fixable issues
 | Percy       | Visual regression testing   |
 | ESLint      | Code quality                |
 | Husky       | Pre-commit enforcement      |
+| k6          | Load/Stress Test            |
 
 ## Roadmap
 

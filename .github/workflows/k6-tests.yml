@@ -1,0 +1,30 @@
+name: K6 Performance Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  k6-run:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: performance
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo apt update
+          sudo apt install -y gnupg software-properties-common
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/k6.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/k6.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt update
+          sudo apt install -y k6
+
+      - name: Run k6 smoke test
+        run: k6 run smoke.test.js
