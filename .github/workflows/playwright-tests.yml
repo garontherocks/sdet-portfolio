@@ -31,16 +31,16 @@ jobs:
         run: npx playwright test
 
       - name: Generate Allure HTML report
-        run: npx allure generate playwright/allure-results -o playwright/allure-report --clean
+        run: npx allure generate allure-results -o allure-report --clean
 
       - name: Upload Allure results
         uses: actions/upload-artifact@v4
         with:
           name: playwright-allure-results
-          path: playwright/allure-results
+          path: allure-results
 
       - name: Upload Allure HTML report
         uses: actions/upload-artifact@v4
         with:
           name: playwright-allure-html
-          path: playwright/allure-report
+          path: allure-report
