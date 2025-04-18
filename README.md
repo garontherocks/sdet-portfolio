@@ -111,6 +111,8 @@ Run manually:
 k6 run performance/smoke.test.js
 ```
 
+Executed automatically via GitHub Actions on push/PR.
+
 ## Code Quality & Linting
 
 - ESLint checks run locally and in CI (GitHub Actions).
@@ -142,6 +144,7 @@ npm run lint:fix                        # Auto-fix fixable issues
 | Percy       | Visual regression testing   |
 | ESLint      | Code quality                |
 | Husky       | Pre-commit enforcement      |
+| k6          | Load/Stress Test            |
 
 ## Roadmap
 
