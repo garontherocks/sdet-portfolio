@@ -15,9 +15,11 @@
   "devDependencies": {
     "@percy/cli": "^1.30.10",
     "@percy/playwright": "^1.0.8",
+    "@percy/sdk-utils": "^1.0.0",
     "@playwright/test": "^1.51.1",
     "@types/node": "^22.13.14",
     "allure-commandline": "^2.33.0",
-    "allure-playwright": "^3.2.1"
+    "allure-playwright": "^3.2.1",
+    "dotenv-cli": "^8.0.0"
   }
 }

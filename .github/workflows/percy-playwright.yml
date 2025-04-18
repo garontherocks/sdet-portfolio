@@ -30,6 +30,7 @@ jobs:
           npm install
           npm install @percy/cli
           npm install @percy/playwright
+          npm install @percy/sdk-utils
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
