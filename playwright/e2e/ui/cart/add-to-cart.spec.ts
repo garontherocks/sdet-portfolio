@@ -3,6 +3,7 @@ import { LoginPage } from '../../../page-objects/LoginPage';
 import { CartPage } from '../../../page-objects/CartPage';
 import { users } from '../../../test-data/users';
 import { cartData } from '../../../test-data/cart';
+import percySnapshot from '@percy/playwright';
 
 let loginPage: LoginPage;
 let cartPage: CartPage;
@@ -19,10 +20,11 @@ test.describe('Cart UI - Add Single Product', () => {
     await loginPage.loginAs(validStandard.username, validStandard.password);
   });
 
-  test('should add a single product and update cart count', async () => {
+  test('should add a single product and update cart count', async ({ page }) => {
     await cartPage.addProductByName(productA);
     await cartPage.assertCartCount(1);
     await cartPage.goToCart();
     await cartPage.assertProductInCart(productA);
+    await percySnapshot(page, 'Product in cart snapshot');
   });
 });
