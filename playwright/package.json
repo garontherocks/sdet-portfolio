@@ -8,7 +8,7 @@
     "test:headed": "npx playwright test --headed",
     "test:ui": "npx playwright show-report",
     "report:allure": "allure generate allure-results -o allure-report --clean && allure open allure-report",
-    "percy:playwright": "percy exec -- node scripts/percy-snapshots.js"
+    "percy:playwright": "percy exec -- node scripts/percy-snapshots.ts"
   },
   "author": "Víctor Martín Aller",
   "license": "MIT",
