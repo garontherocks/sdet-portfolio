@@ -54,6 +54,23 @@ npm run run --workspace=cypress         # Cypress headless
 npm run test --workspace=playwright     # Playwright headless
 ```
 
+## 📋 Reporting
+
+### Cypress + Mochawesome
+![Cypress report](https://img.shields.io/badge/report-mochawesome-blue)
+
+- `npm run run --workspace=cypress`  
+- `npm run report:merge --workspace=cypress`  
+- `npm run report:gen   --workspace=cypress`  
+- Open `cypress/reports/mochawesome/html/index.html`
+
+### Playwright + Allure
+![Allure report](https://img.shields.io/badge/report-allure-red)
+
+- `npm run test --workspace=playwright`  
+- `npm run allure:generate --workspace=playwright`  
+- `npm run allure:open     --workspace=playwright`  
+
 ## Code Quality & Linting
 
 - ESLint checks run locally and in CI (GitHub Actions).
