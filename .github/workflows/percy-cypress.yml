@@ -25,6 +25,7 @@ jobs:
         run: |
           npm install
           npm install @percy/cli
+          npm install @percy/cypress
 
       - name: Run Cypress tests with Percy
         env:
