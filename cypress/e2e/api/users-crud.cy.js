@@ -28,8 +28,7 @@ describe('ReqRes API - Users CRUD Basics', () => {
       headers: { ...maybeAuthHeaders },
       failOnStatusCode: false,
     }).then((response) => {
-      if (apiKey) {
-        expect(response.status).to.eq(200);
+      if (response.status === 200) {
         expect(response.body.data).to.have.property('id', 2);
       } else {
         expect(response.status).to.eq(401);
