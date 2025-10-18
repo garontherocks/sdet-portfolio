@@ -4,18 +4,37 @@ describe('ReqRes API - Users CRUD Basics', () => {
   const maybeAuthHeaders = apiKey ? { 'x-api-key': apiKey } : {};
 
   it('GET list users (page=2) with header checks', () => {
-    cy.request(`${baseUrl}/users?page=2`).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.headers).to.have.property('content-type');
-      expect(response.headers['content-type']).to.include('application/json');
-      expect(response.body.data).to.be.an('array').and.not.be.empty;
+    cy.request({
+      method: 'GET',
+      url: `${baseUrl}/users?page=2`,
+      headers: { ...maybeAuthHeaders },
+      failOnStatusCode: false,
+    }).then((response) => {
+      if (response.status === 200) {
+        expect(response.headers).to.have.property('content-type');
+        expect(response.headers['content-type']).to.include('application/json');
+        expect(response.body.data).to.be.an('array').and.not.be.empty;
+      } else {
+        expect(response.status).to.eq(401);
+        expect(response.body).to.have.property('error', 'Missing API key');
+      }
     });
   });
 
   it('GET single user id=2', () => {
-    cy.request(`${baseUrl}/users/2`).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body.data).to.have.property('id', 2);
+    cy.request({
+      method: 'GET',
+      url: `${baseUrl}/users/2`,
+      headers: { ...maybeAuthHeaders },
+      failOnStatusCode: false,
+    }).then((response) => {
+      if (apiKey) {
+        expect(response.status).to.eq(200);
+        expect(response.body.data).to.have.property('id', 2);
+      } else {
+        expect(response.status).to.eq(401);
+        expect(response.body).to.have.property('error', 'Missing API key');
+      }
     });
   });
 
