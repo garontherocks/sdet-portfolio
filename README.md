@@ -172,6 +172,14 @@ This portfolio is being developed iteratively to showcase practical skills and g
 - Notifications & Insights
 - Pull Request Validation
 
+## Learning Aids
+
+- Postman examples: `postman/` (collection + environment with variables, pre‑request scripts, and tests). See `postman/README.md`.
+- Cypress API tests: `cypress/e2e/api/*.cy.js` (status/body/headers assertions, CRUD basics).
+- Microservices event‑driven testing: `docs/microservices/README.md` and example schema `docs/microservices/event-schemas/order.created.schema.json`.
+- AWS basics cheat‑sheet: `docs/aws/README.md`.
+- Mortgage basics (domain): `docs/domain/mortgage-basics.md`.
+
 ## License
 
 MIT

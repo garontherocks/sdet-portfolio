@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/order.created.schema.json",
+  "title": "order.created",
+  "type": "object",
+  "required": ["eventType", "occurredAt", "correlationId", "data"],
+  "properties": {
+    "eventType": { "const": "order.created" },
+    "occurredAt": { "type": "string", "format": "date-time" },
+    "correlationId": { "type": "string", "minLength": 8 },
+    "data": {
+      "type": "object",
+      "required": ["orderId", "customerId", "amount", "currency"],
+      "properties": {
+        "orderId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "amount": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+
