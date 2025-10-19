@@ -10,6 +10,8 @@ jobs:
   newman:
     name: Run Postman collection
     runs-on: ubuntu-latest
+    env:
+      REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,4 +28,5 @@ jobs:
         run: |
           newman run postman/SDET-Portfolio-ReqRes.postman_collection.json \
             -e postman/SDET-Portfolio-Env.postman_environment.json \
+            --env-var apiKey="$REQRES_API_KEY" \
             --reporters cli
