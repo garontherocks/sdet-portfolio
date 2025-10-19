@@ -1,0 +1,32 @@
+name: Postman CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  newman:
+    name: Run Postman collection
+    runs-on: ubuntu-latest
+    env:
+      REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm i -g newman
+
+      - name: Run collection with environment
+        run: |
+          newman run postman/SDET-Portfolio-ReqRes.postman_collection.json \
+            -e postman/SDET-Portfolio-Env.postman_environment.json \
+            --env-var apiKey="$REQRES_API_KEY" \
+            --reporters cli
