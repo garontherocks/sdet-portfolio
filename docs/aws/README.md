@@ -1,4 +1,4 @@
-AWS Basics (Interview Cheat‑Sheet)
+AWS Basics
 
 Core Services
 - EC2: virtual servers. Know instance types, security groups, AMIs, autoscaling basics.
