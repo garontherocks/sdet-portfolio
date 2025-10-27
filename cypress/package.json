@@ -7,7 +7,7 @@
     "scripts": {
         "open": "cypress open",
         "run": "cypress run",
-        "cy:smoke": "cypress run --env grep=@smoke",
+        "cy:smoke": "cypress run --spec 'e2e/**/*smoke*.cy.js'",
         "report:merge": "npx mochawesome-merge reports/mochawesome/*.json -o reports/mochawesome/merged.json",
         "report:gen": "npx marge reports/mochawesome/merged.json -o reports/mochawesome/html",
         "percy:exec": "percy exec -- cypress run",
@@ -18,7 +18,6 @@
     "license": "MIT",
     "devDependencies": {
         "cypress": "^14.2.1",
-        "cypress-grep": "4.0.0",
         "allure-commandline": "^2.33.0",
         "@shelex/cypress-allure-plugin": "2.40.2",
         "mochawesome": "^7.1.3",
