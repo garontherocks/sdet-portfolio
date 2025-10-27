@@ -33,6 +33,14 @@ jobs:
           npm install @percy/playwright
           npm install @percy/sdk-utils
 
+      - name: Generate synthetic users fixtures
+        if: always()
+        working-directory: .
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
+          npm run data:users -- --count=20 --seed=${{ github.run_number }}
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
