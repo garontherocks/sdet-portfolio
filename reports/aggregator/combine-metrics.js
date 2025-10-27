@@ -62,7 +62,7 @@ async function readCypressMochawesome() {
   const base = path.join(process.cwd(), 'cypress', 'reports', 'mochawesome');
   if (!(await exists(base))) {
     warn('Cypress mochawesome folder not found:', base);
-    return { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0 };
+    return { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, retries: 0 };
   }
 
   const merged = path.join(base, 'merged.json');
@@ -92,16 +92,13 @@ async function readCypressMochawesome() {
     totals.durationMs += duration;
 
     // Heuristic retries extraction from mochawesome-like structure
-    // Try aggregated retries if present
     if (typeof s.retries === 'number') totals.retries += s.retries;
-    // Otherwise walk test nodes
     const results = Array.isArray(json.results) ? json.results : [];
     for (const r of results) {
       const suites = Array.isArray(r.suites) ? r.suites : [];
       for (const su of suites) {
         const tests = Array.isArray(su.tests) ? su.tests : [];
         for (const t of tests) {
-          // mochawesome test may have attempts array
           if (Array.isArray(t.attempts) && t.attempts.length > 1) {
             totals.retries += (t.attempts.length - 1);
           } else if (typeof t.retries === 'number') {
@@ -134,7 +131,7 @@ async function readPlaywrightAllure() {
     else totals.failed += 1; // failed/broken/unknown → failed
     const dur = r.time?.duration ?? (r.time?.stop && r.time?.start ? (r.time.stop - r.time.start) : 0);
     totals.durationMs += Number.isFinite(dur) ? dur : 0;
-    // Retries: Allure may include retry info via "retry" or parameters/history
+    // Retries (best-effort): mark retry/flaky as a retry count increment
     if (r.retry === true || r.statusDetails?.flaky === true) totals.retries += 1;
   }
   log('Playwright totals:', totals);
@@ -191,7 +188,6 @@ async function readPercy() {
   const s = await readJSON(candidate);
   if (!s) return { diffRate: null };
   let diffRate = null;
-  // Heuristics: try common shapes
   if (typeof s.diffRatio === 'number') diffRate = s.diffRatio;
   else if (typeof s.diff_percent === 'number') diffRate = s.diff_percent / 100;
   else if (s.totalComparisons != null && s.totalDiffs != null) diffRate = pct(s.totalDiffs, s.totalComparisons);
@@ -221,10 +217,8 @@ async function readK6() {
   const m = s.metrics?.http_req_duration || s.metrics?.['http_req_duration'];
   let p95 = null;
   if (m) {
-    // Try different shapes
     p95 = m['p(95)'] ?? m?.percentiles?.['p(95)'] ?? m?.values?.['p(95)'] ?? null;
   }
-  // Some exports use seconds; prefer ms if unit says 'ms'
   if (p95 != null && s.metrics?.http_req_duration?.unit === 's') p95 = p95 * 1000;
   log('k6 http p95(ms):', p95, '(from', candidate, ')');
   return { http_p95_ms: p95 == null ? null : +(+p95).toFixed(2) };
@@ -248,7 +242,7 @@ async function main() {
   const totalRetries = (cypress.retries || 0) + (playwright.retries || 0);
   const passRate = pct(totalPassed, totalTests);
   const failRate = pct(totalFailed, totalTests);
-  // Flakiness approximation: retries/tests
+  // Flakiness approximation: retries/tests (percentage)
   const flakinessRate = totalTests > 0 ? +((totalRetries / totalTests) * 100).toFixed(2) : null;
   const tttSeconds = toSeconds((cypress.durationMs || 0) + (playwright.durationMs || 0));
 
