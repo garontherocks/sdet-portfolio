@@ -31,6 +31,8 @@ jobs:
         run: |
           mkdir -p reports/dashboards
           cp reports/dashboards/dashboard.html reports/dashboards/index.html || true
+          # place quality.json alongside index.html for fetch()
+          cp reports/quality.json reports/dashboards/quality.json || true
 
       - name: Upload dashboard artifacts
         uses: actions/upload-artifact@v4
@@ -59,6 +61,10 @@ jobs:
           if [ "${code}" = "78" ]; then echo "unstable=true" >> $GITHUB_OUTPUT; exit 0; fi; \
           if [ -n "${code}" ] && [ "${code}" != "0" ]; then exit ${code}; fi
 
+      - name: Notify (Slack/Teams if configured)
+        if: always()
+        run: node scripts/ci/notify.js
+
   deploy-pages:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -68,15 +74,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
       - name: Build dashboard
         run: |
           node reports/aggregator/combine-metrics.js
           mkdir -p reports/dashboards
           cp reports/dashboards/dashboard.html reports/dashboards/index.html || true
+          cp reports/quality.json reports/dashboards/quality.json || true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: reports/dashboards
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
-
+        with:
+          artifact_name: github-pages
