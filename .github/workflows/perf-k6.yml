@@ -1,0 +1,59 @@
+name: k6 Performance
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  k6:
+    name: k6-${{ matrix.suite }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [smoke, load]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install k6
+        uses: grafana/setup-k6@v1
+
+      - name: Ensure reports directory
+        run: mkdir -p reports
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run k6 ${{ matrix.suite }}
+        shell: bash
+        run: |
+          if [ "${{ matrix.suite }}" = "smoke" ]; then
+            npm run k6:smoke -- --summary-export reports/k6_smoke_summary.json
+          else
+            if npm run | grep -q "k6:load"; then
+              npm run k6:load -- --summary-export reports/k6_load_summary.json
+            else
+              echo "k6:load script not found. Running default script as fallback.";
+              k6 run performance/smoke.test.js --summary-export reports/k6_load_summary.json
+            fi
+          fi
+
+      - name: Enforce smoke p95 threshold
+        if: matrix.suite == 'smoke'
+        run: |
+          node -e "const fs=require('fs'); const p='reports/k6_smoke_summary.json'; if(!fs.existsSync(p)){console.error('summary not found',p); process.exit(1);} const j=JSON.parse(fs.readFileSync(p,'utf8')); const m=j.metrics && (j.metrics.http_req_duration||j.metrics['http_req_duration']); const p95=m && (m['p(95)'] || (m.percentiles && m.percentiles['p(95)']) || (m.values && m.values['p(95)'])); const unit=(j.metrics && j.metrics.http_req_duration && j.metrics.http_req_duration.unit)||'ms'; let val=p95; if(unit==='s') val*=1000; console.log('http_req_duration p(95)=', val,'ms'); if(val>800){console.error('p95 above 800ms'); process.exit(1);} "
+
+      - name: Upload k6 summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-${{ matrix.suite }}-summary
+          path: reports/k6_${{ matrix.suite }}_summary.json
+
