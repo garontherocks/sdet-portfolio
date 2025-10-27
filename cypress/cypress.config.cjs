@@ -6,14 +6,8 @@ module.exports = defineConfig({
     specPattern: 'e2e/**/*.cy.js',
     supportFile: 'support/e2e.js',
     setupNodeEvents(on, config) {
-      // Allure results writer (best-effort)
-      try {
-        require('@shelex/cypress-allure-plugin/writer')(on, config)
-      } catch (e) {
-        // Do not fail the run if plugin is unavailable in CI
-        // eslint-disable-next-line no-console
-        console.warn('Allure writer not initialized:', e?.message || e)
-      }
+      // Allure results writer
+      require('@shelex/cypress-allure-plugin/writer')(on, config)
       on('task', {
         log(_message) {
           return null
