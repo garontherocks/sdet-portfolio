@@ -75,7 +75,7 @@ async function readCypressMochawesome() {
     if (all.length) files.push(...all);
   }
 
-  let totals = { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0 };
+  let totals = { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, retries: 0 };
   for (const file of files) {
     const json = await readJSON(file);
     if (!json) continue;
@@ -90,6 +90,26 @@ async function readCypressMochawesome() {
     totals.failed += failed;
     totals.skipped += skipped;
     totals.durationMs += duration;
+
+    // Heuristic retries extraction from mochawesome-like structure
+    // Try aggregated retries if present
+    if (typeof s.retries === 'number') totals.retries += s.retries;
+    // Otherwise walk test nodes
+    const results = Array.isArray(json.results) ? json.results : [];
+    for (const r of results) {
+      const suites = Array.isArray(r.suites) ? r.suites : [];
+      for (const su of suites) {
+        const tests = Array.isArray(su.tests) ? su.tests : [];
+        for (const t of tests) {
+          // mochawesome test may have attempts array
+          if (Array.isArray(t.attempts) && t.attempts.length > 1) {
+            totals.retries += (t.attempts.length - 1);
+          } else if (typeof t.retries === 'number') {
+            totals.retries += t.retries;
+          }
+        }
+      }
+    }
   }
   log('Cypress totals:', totals);
   return totals;
@@ -100,10 +120,10 @@ async function readPlaywrightAllure() {
   const base = path.join(process.cwd(), 'playwright', 'allure-results');
   if (!(await exists(base))) {
     warn('Playwright allure-results not found:', base);
-    return { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, flaky: 0 };
+    return { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, retries: 0 };
   }
   const entries = await listFilesRecursive(base, p => /-result\.json$/i.test(p));
-  let totals = { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, flaky: 0 };
+  let totals = { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, retries: 0 };
   for (const { path: p } of entries) {
     const r = await readJSON(p);
     if (!r) continue;
@@ -114,7 +134,8 @@ async function readPlaywrightAllure() {
     else totals.failed += 1; // failed/broken/unknown → failed
     const dur = r.time?.duration ?? (r.time?.stop && r.time?.start ? (r.time.stop - r.time.start) : 0);
     totals.durationMs += Number.isFinite(dur) ? dur : 0;
-    if (r.flaky === true || r.statusDetails?.flaky === true) totals.flaky += 1;
+    // Retries: Allure may include retry info via "retry" or parameters/history
+    if (r.retry === true || r.statusDetails?.flaky === true) totals.retries += 1;
   }
   log('Playwright totals:', totals);
   return totals;
@@ -224,18 +245,19 @@ async function main() {
   const totalTests = (cypress.tests || 0) + (playwright.tests || 0);
   const totalPassed = (cypress.passed || 0) + (playwright.passed || 0);
   const totalFailed = (cypress.failed || 0) + (playwright.failed || 0);
-  const flaky = playwright.flaky ?? 0; // only reliable source
+  const totalRetries = (cypress.retries || 0) + (playwright.retries || 0);
   const passRate = pct(totalPassed, totalTests);
   const failRate = pct(totalFailed, totalTests);
-  const flakinessRate = totalTests > 0 ? +(flaky / totalTests).toFixed(4) : null;
+  // Flakiness approximation: retries/tests
+  const flakinessRate = totalTests > 0 ? +((totalRetries / totalTests) * 100).toFixed(2) : null;
   const tttSeconds = toSeconds((cypress.durationMs || 0) + (playwright.durationMs || 0));
 
   const quality = {
     timestamp: new Date().toISOString(),
     buildId,
     suites: {
-      cypress: { tests: cypress.tests, passed: cypress.passed, failed: cypress.failed, skipped: cypress.skipped },
-      playwright: { tests: playwright.tests, passed: playwright.passed, failed: playwright.failed, skipped: playwright.skipped },
+      cypress: { tests: cypress.tests, passed: cypress.passed, failed: cypress.failed, skipped: cypress.skipped, retries: cypress.retries },
+      playwright: { tests: playwright.tests, passed: playwright.passed, failed: playwright.failed, skipped: playwright.skipped, retries: playwright.retries },
     },
     passRate,
     failRate,
@@ -270,4 +292,3 @@ if (import.meta.url === `file://${path.resolve(process.argv[1])}`) {
     process.exitCode = 1;
   });
 }
-

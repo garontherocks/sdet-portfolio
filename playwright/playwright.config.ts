@@ -11,7 +11,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+const cfg = defineConfig({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -84,3 +84,13 @@ export default defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
 });
+
+// Optional sharding via env PW_SHARD in format "x/y" e.g., 1/2
+const shardEnv = process.env.PW_SHARD;
+if (shardEnv && /^(\d+)\/(\d+)$/.test(shardEnv)) {
+  const [, cur, total] = shardEnv.match(/(\d+)\/(\d+)/)!;
+  // @ts-ignore
+  (cfg as any).shard = { current: Number(cur), total: Number(total) };
+}
+
+export default cfg;
