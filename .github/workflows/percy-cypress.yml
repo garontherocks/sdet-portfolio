@@ -6,6 +6,7 @@ on:
 
 jobs:
   percy-cypress:
+    if: ${{ secrets.PERCY_TOKEN != '' && (github.event_name != 'pull_request' || !github.event.pull_request.head.repo.fork) }}
     runs-on: ubuntu-latest
 
     defaults:
@@ -31,3 +32,7 @@ jobs:
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
         run: npx percy exec -- npx cypress run
+
+      - name: Skip Percy (no token or forked PR)
+        if: ${{ !(secrets.PERCY_TOKEN != '' && (github.event_name != 'pull_request' || !github.event.pull_request.head.repo.fork)) }}
+        run: echo "Skipping Percy run: missing PERCY_TOKEN or forked PR with no secrets."

@@ -35,3 +35,18 @@ jobs:
         with:
           name: cypress-mochawesome-report
           path: cypress/reports/mochawesome
+
+      - name: Generate Allure HTML report
+        run: npx allure generate reports/allure-results -o reports/allure-report --clean
+
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-allure-results
+          path: cypress/reports/allure-results
+
+      - name: Upload Allure HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-allure-html
+          path: cypress/reports/allure-report
