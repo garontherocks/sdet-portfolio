@@ -17,7 +17,18 @@ jobs:
         with:
           node-version: 18
 
-      - run: npm install
+      - name: Install dependencies (with ci fallback)
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
+
+      - name: Generate synthetic users fixtures
+        if: always()
+        working-directory: .
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
+          npm run data:users -- --count=20 --seed=${{ github.run_number }}
 
       - run: npx playwright install --with-deps
 

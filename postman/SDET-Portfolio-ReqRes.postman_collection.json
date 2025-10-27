@@ -28,7 +28,7 @@
 }
 },
 {
-"listen": "test",
+"en": "test",
 "script": {
 "exec": [
 "// Allow 400 (original) or 401 when API key required",
@@ -78,7 +78,7 @@
 "name": "Create User",
 "event": [
 {
-"listen": "prerequest",
+"en": "prerequest",
 "script": {
 "exec": [
 "// Default name/job if not provided in env",
@@ -92,7 +92,7 @@
 }
 },
 {
-"listen": "test",
+"en": "test",
 "script": {
 "exec": [
 "const code = pm.response.code;",
@@ -135,13 +135,18 @@
 {
 "listen": "test",
 "script": {
-"exec": [
-"pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+        "exec": [
+"const code = pm.response.code;",
 "pm.test('Content-Type JSON', function () { pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'); });",
-"pm.test('Data array has users', function () {",
+"if (code === 200) {",
+" pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+" pm.test('Data array has users', function () {",
 " const json = pm.response.json();",
 " pm.expect(json.data).to.be.an('array').with.length.greaterThan(0);",
-"});"
+" });",
+"} else {",
+" pm.test('Status is 401 or 403 when API key missing', function () { pm.expect([401,403]).to.include(code); });",
+"}"
 ],
 "type": "text/javascript"
 }

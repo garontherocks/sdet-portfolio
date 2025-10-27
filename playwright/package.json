@@ -7,6 +7,9 @@
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
     "test:ui": "npx playwright show-report",
+    "test:smoke": "npx playwright test -g '@smoke'",
+    "test:shard1of2": "PW_SHARD=1/2 npx playwright test",
+    "test:shard2of2": "PW_SHARD=2/2 npx playwright test",
     "report:allure": "allure generate allure-results -o allure-report --clean && allure open allure-report",
     "percy:playwright": "percy exec -- npx playwright test"
   },

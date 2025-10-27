@@ -18,13 +18,19 @@ jobs:
 
       - name: Install k6
         run: |
-          sudo apt update
-          sudo apt install -y gnupg software-properties-common
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates gnupg curl
           sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/k6.gpg
-          echo "deb [signed-by=/etc/apt/keyrings/k6.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt update
-          sudo apt install -y k6
+          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/k6-archive-keyring.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+          k6 version
+
+      - name: Install dependencies (with ci fallback)
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
 
       - name: Run k6 smoke test
         run: k6 run smoke.test.js

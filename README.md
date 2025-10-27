@@ -133,6 +133,12 @@ npm run lint:fix                        # Auto-fix fixable issues
 - DRY test logic via reusable data and utilities
 - Clear test naming and assertions
 
+### Orchestration
+- Cypress tags via cypress-grep (`@smoke`, `@regression`, `@critical`)
+  - Run smoke: `npm run cy:smoke --workspace=cypress`
+- Playwright sharding with `PW_SHARD=x/y`
+  - Examples: `npm run test:shard1of2 --workspace=playwright`, `npm run test:shard2of2 --workspace=playwright`
+
 ## Tooling Overview
 
 | Tool        | Purpose                     |

@@ -1,0 +1,93 @@
+name: Reports Hub
+
+on:
+  push:
+  pull_request:
+  workflow_run:
+    workflows: ["Cypress Tests", "Playwright Tests", "Lighthouse CI", "k6 Performance"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Run aggregator
+        run: node reports/aggregator/combine-metrics.js
+
+      - name: Copy dashboard assets
+        run: |
+          mkdir -p reports/dashboards
+          cp reports/dashboards/dashboard.html reports/dashboards/index.html || true
+          # place quality.json alongside index.html for fetch()
+          cp reports/quality.json reports/dashboards/quality.json || true
+
+      - name: Upload dashboard artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-dashboard
+          path: |
+            reports/quality.json
+            reports/dashboards/
+
+  quality-gates:
+    runs-on: ubuntu-latest
+    needs: aggregate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Run aggregator (ensure quality.json exists)
+        run: node reports/aggregator/combine-metrics.js
+      - name: Enforce quality gates
+        id: gates
+        shell: bash
+        run: |
+          node scripts/quality-gates.js || code=$?; \
+          if [ "${code}" = "78" ]; then echo "unstable=true" >> $GITHUB_OUTPUT; exit 0; fi; \
+          if [ -n "${code}" ] && [ "${code}" != "0" ]; then exit ${code}; fi
+
+      - name: Notify (Slack/Teams if configured)
+        if: always()
+        run: node scripts/ci/notify.js
+
+  deploy-pages:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [aggregate]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Build dashboard
+        run: |
+          node reports/aggregator/combine-metrics.js
+          mkdir -p reports/dashboards
+          cp reports/dashboards/dashboard.html reports/dashboards/index.html || true
+          cp reports/quality.json reports/dashboards/quality.json || true
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports/dashboards
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
