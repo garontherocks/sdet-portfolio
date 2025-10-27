@@ -1,12 +1,20 @@
 # SDET Portfolio – Cypress (JavaScript) & Playwright (TypeScript)
 
-![Cypress Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/cypress-tests.yml/badge.svg)
-![Playwright Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/playwright-tests.yml/badge.svg)
-![Lint Status](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml/badge.svg)
-![Lighthouse Audit](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lighthouse.yml/badge.svg)
-![Postman CI](https://github.com/garontherocks/sdet-portfolio/actions/workflows/postman-tests.yml/badge.svg)
+[![Cypress Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/cypress-tests.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/cypress-tests.yml)
+[![Playwright Tests](https://github.com/garontherocks/sdet-portfolio/actions/workflows/playwright-tests.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/playwright-tests.yml)
+[![Percy (Cypress)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/percy-cypress.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/percy-cypress.yml)
+[![Percy (Playwright)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/percy-playwright.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/percy-playwright.yml)
+[![k6 Performance](https://github.com/garontherocks/sdet-portfolio/actions/workflows/perf-k6.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/perf-k6.yml)
+[![Lighthouse CI](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lighthouse.yml)
+[![Reports Hub](https://github.com/garontherocks/sdet-portfolio/actions/workflows/reports-hub.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/reports-hub.yml)
+[![Lint](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml)
+[![Postman CI](https://github.com/garontherocks/sdet-portfolio/actions/workflows/postman-tests.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/postman-tests.yml)
 
 This public SDET portfolio demonstrates best practices using [Cypress](https://www.cypress.io/) with JavaScript, and [Playwright](https://playwright.dev/) with TypeScript. Tests target the demo website [SauceDemo](https://www.saucedemo.com/) and cover UI and API automation workflows. The project evolves iteratively to include performance, stress, visual testing, reporting, and CI/CD.
+
+See Architecture and Contributing:
+- docs/architecture.md
+- CONTRIBUTING.md
 
 ## Project Structure
 
@@ -151,6 +159,12 @@ npm run lint:fix                        # Auto-fix fixable issues
 
 This portfolio is being developed iteratively to showcase practical skills and good practices in QA Automation.
 
+### Phase Progress
+
+- [x] Phase 1 – Core Coverage
+- [x] Phase 2 – CI/CD, Reporting and Tooling
+- [ ] Phase 3 – Orchestration & Continuous Quality
+
 ### Phase 1 – Core Coverage (Completed)
 
 - ✅ Cypress and Playwright test coverage for login and cart functionality.
@@ -172,6 +186,29 @@ This portfolio is being developed iteratively to showcase practical skills and g
 - Pipeline Improvements
 - Notifications & Insights
 - Pull Request Validation
+
+<!-- DUPLICATE CHECKLIST START (hidden to avoid duplication) -->
+<!--
+#### Phase Details (Checklist)
+
+- Phase 1 – Core Coverage
+  - [x] Login and cart UI coverage (Cypress/Playwright)
+  - [x] ReqRes API tests (Cypress/Playwright)
+  - [x] Page Object Model + shared test data
+  - [x] npm workspaces structure
+
+- Phase 2 – CI/CD, Reporting and Tooling
+  - [x] GitHub Actions for Cypress, Playwright, ESLint
+  - [x] Mochawesome (Cypress) and Allure (Playwright) reports
+  - [x] Lighthouse CI performance checks
+  - [x] Percy visual testing
+  - [x] k6 load/stress tests
+
+- Phase 3 – Orchestration & Continuous Quality
+  - [ ] Centralized reports hub (Pages)
+  - [ ] Pipeline improvements and gating
+  - [ ] Notifications and insights
+  - [ ] PR validation checks
 
 ## Learning Aids
 
