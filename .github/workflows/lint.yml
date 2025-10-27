@@ -17,8 +17,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (with ci fallback)
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
 
       - name: Run ESLint
         run: npm run lint

@@ -21,9 +21,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install dependencies (with ci fallback)
+        shell: bash
         run: |
-          npm install
+          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
           npm install @percy/cli
           npm install @percy/cypress
 
