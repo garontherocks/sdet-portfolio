@@ -35,3 +35,15 @@ jobs:
         with:
           name: cypress-mochawesome-report
           path: cypress/reports/mochawesome
+
+      - name: Aggregate quality metrics
+        if: always()
+        working-directory: .
+        run: node reports/aggregator/combine-metrics.js
+
+      - name: Upload aggregated quality.json
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-json-cypress
+          path: reports/quality.json
