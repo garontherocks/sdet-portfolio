@@ -18,7 +18,7 @@
     "license": "MIT",
     "devDependencies": {
         "cypress": "^14.2.1",
-        "cypress-grep": "4.0.1",
+        "cypress-grep": "4.0.0",
         "allure-commandline": "^2.33.0",
         "@shelex/cypress-allure-plugin": "2.40.2",
         "mochawesome": "^7.1.3",
