@@ -8,8 +8,6 @@
 
 This public SDET portfolio demonstrates best practices using [Cypress](https://www.cypress.io/) with JavaScript, and [Playwright](https://playwright.dev/) with TypeScript. Tests target the demo website [SauceDemo](https://www.saucedemo.com/) and cover UI and API automation workflows. The project evolves iteratively to include performance, stress, visual testing, reporting, and CI/CD.
 
-See Quality Gates and Reporting: `docs/quality-gates-and-reporting.md`
-
 ## Project Structure
 
 ```
