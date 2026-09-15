@@ -17,7 +17,10 @@ export default function () {
   });
   check(response, {
     'homepage returns 200': (res) => res.status === 200,
-    'homepage response body is non-empty': (res) => res.body.length > 0,
+    // Network failures can leave body undefined. Record a failed check instead
+    // of masking the original transport failure with a JavaScript exception.
+    'homepage response body is non-empty': (res) =>
+      typeof res.body === 'string' && res.body.length > 0,
   });
   sleep(1);
 }
