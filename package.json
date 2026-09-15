@@ -40,7 +40,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
     "newman": "^6.2.1",
-    "typescript": "^7.0.2"
+    "typescript": "^6.0.3"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix"
