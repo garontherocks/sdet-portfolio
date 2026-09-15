@@ -1,0 +1,70 @@
+name: AI Failure Triage
+
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: 'Pull request number to receive the advisory comment'
+        required: true
+        type: number
+      test_name:
+        description: 'Affected test or suite'
+        required: true
+        type: string
+      evidence:
+        description: 'Sanitized failure log or error evidence'
+        required: true
+        type: string
+      use_live_model:
+        description: 'Use OpenAI instead of the deterministic provider'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: ai-triage-${{ inputs.pull_request }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Store workflow evidence as untrusted data
+        env:
+          FAILURE_EVIDENCE: ${{ inputs.evidence }}
+        run: node --input-type=module -e "import fs from 'node:fs'; fs.mkdirSync('reports', { recursive:true }); fs.writeFileSync('reports/failure-evidence.txt', process.env.FAILURE_EVIDENCE);"
+      - name: Run schema-validated triage
+        env:
+          OPENAI_API_KEY: ${{ inputs.use_live_model && secrets.OPENAI_API_KEY || '' }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+        run: >-
+          node ai/src/failure-triage.js
+          --input reports/failure-evidence.txt
+          --test "${{ inputs.test_name }}"
+          --provider ${{ inputs.use_live_model && 'openai' || 'mock' }}
+          --output reports/ai-triage.json
+      - name: Render safe advisory comment
+        run: node ai/src/render-pr-comment.js --input reports/ai-triage.json --output reports/ai-triage.md
+      - name: Comment on selected pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment "${{ inputs.pull_request }}" --body-file reports/ai-triage.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ai-failure-triage
+          retention-days: 30
+          path: |
+            reports/ai-triage.json
+            reports/ai-triage.md
+          if-no-files-found: error

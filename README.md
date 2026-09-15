@@ -9,6 +9,7 @@
 [![Reports Hub](https://github.com/garontherocks/sdet-portfolio/actions/workflows/reports-hub.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/reports-hub.yml)
 [![Lint](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml)
 [![Postman CI](https://github.com/garontherocks/sdet-portfolio/actions/workflows/postman-tests.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/postman-tests.yml)
+[![GenAI Quality Evals](https://github.com/garontherocks/sdet-portfolio/actions/workflows/ai-quality.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/ai-quality.yml)
 
 This public portfolio demonstrates practical SDET work with JavaScript, TypeScript and CI/CD. Browser scenarios target [SauceDemo](https://www.saucedemo.com/); anonymous demo API examples target [ReqRes](https://reqres.in/).
 
@@ -26,6 +27,7 @@ The emphasis is trustworthy evidence: tests assert one intended API contract, lo
 | Web quality | Median-of-three Lighthouse performance and accessibility audits |
 | Performance | k6 smoke and load gates, plus an opt-in stress profile |
 | CI | Parallel Playwright shards, concurrency cancellation and a consolidated quality hub |
+| GenAI quality | Structured failure triage, labeled evals, prompt-injection checks and review-only test generation |
 
 See [architecture](docs/architecture.md) for the evidence flow and [contributing](CONTRIBUTING.md) for local validation.
 
@@ -36,6 +38,7 @@ cypress/                 Cypress UI/API tests, page objects and data
 playwright/              Playwright UI/API tests, page objects and data
 performance/             k6 smoke, load and stress scenarios
 postman/                 Newman collection and environment
+ai/                      Prompts, schemas, providers, evals and review-only generated plans
 reports/                 Aggregator and dashboard
 scripts/                 Quality gates and CI helpers
 .github/workflows/       Focused checks and consolidated evidence workflow
@@ -101,6 +104,17 @@ npm run k6:stress
 
 Smoke and load run in CI. Stress is an explicit manual workflow option to avoid sustained automatic load against a public service.
 
+### GenAI quality engineering
+
+```bash
+npm run ai:test
+npm run ai:eval
+npm run ai:triage -- --input failure.log --test checkout
+npm run ai:generate-tests -- --requirement ai/examples/checkout-requirement.md --id REQ-CHECKOUT-001
+```
+
+Ordinary CI uses a deterministic provider for reproducible, credential-free evaluation. An optional manually dispatched job uses OpenAI structured outputs when the `OPENAI_API_KEY` repository secret is configured. Model responses must satisfy strict JSON schemas; logs are sanitized and treated as untrusted evidence; generated tests always require human review. See [GenAI quality engineering](docs/genai-quality-engineering.md).
+
 ## Quality dashboard
 
 `reports-hub.yml` generates Cypress, Playwright Chromium, Lighthouse and k6 evidence in the same job before aggregating it. The build fails if any required evidence is missing or violates its threshold. Successful `main` runs publish the current-run dashboard to GitHub Pages; historical trends are intentionally omitted until durable history is available.
@@ -113,6 +127,9 @@ Smoke and load run in CI. Stress is an explicit manual workflow option to avoid 
 - [x] Genuine smoke/load/stress profiles
 - [x] Required-evidence quality gates
 - [x] Consolidated quality dashboard
+- [x] Provider-independent AI failure triage and structured outputs
+- [x] Labeled AI evaluations and prompt-injection security tests
+- [x] Review-only requirements-to-test generation
 - [ ] Add a controlled first-party demo application for deeper contract and performance testing
 
 ## License

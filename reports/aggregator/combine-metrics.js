@@ -237,16 +237,35 @@ async function readK6() {
   return { http_p95_ms: p95 == null ? null : +(+p95).toFixed(2) };
 }
 
+async function readAiEvals() {
+  const file = path.join(process.cwd(), 'reports', 'ai-evals.json');
+  if (!(await exists(file))) {
+    warn('AI evaluation report not found:', file);
+    return { total: 0, accuracy: null, schemaCompliance: null, securityCases: 0, averageLatencyMs: null, provider: null };
+  }
+  const report = await readJSON(file);
+  if (!report) return { total: 0, accuracy: null, schemaCompliance: null, securityCases: 0, averageLatencyMs: null, provider: null };
+  return {
+    total: report.total ?? 0,
+    accuracy: report.accuracy ?? null,
+    schemaCompliance: report.schemaCompliance ?? null,
+    securityCases: report.securityCases ?? 0,
+    averageLatencyMs: report.averageLatencyMs ?? null,
+    provider: report.provider ?? null,
+  };
+}
+
 async function main() {
   const started = Date.now();
   const buildId = process.env.GITHUB_RUN_ID || process.env.BUILD_ID || process.env.GITHUB_SHA || null;
 
-  const [cypress, playwright, lighthouse, percy, k6] = await Promise.all([
+  const [cypress, playwright, lighthouse, percy, k6, ai] = await Promise.all([
     readCypressMochawesome(),
     readPlaywrightAllure(),
     readLighthouse(),
     readPercy(),
     readK6(),
+    readAiEvals(),
   ]);
 
   const totalTests = (cypress.tests || 0) + (playwright.tests || 0);
@@ -281,6 +300,7 @@ async function main() {
     perf: {
       http_p95_ms: k6.http_p95_ms,
     },
+    ai,
     summed_test_duration_seconds: tttSeconds,
   };
 
