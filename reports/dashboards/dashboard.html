@@ -44,6 +44,8 @@
         makeCard('Visual Review', current.visual?.diffRate == null ? 'Review in Percy' : `${(current.visual.diffRate*100).toFixed(2)}%`, 'Manual approval is separate from snapshot upload');
         makeCard('HTTP p95', current.perf?.http_p95_ms == null ? 'n/a' : `${current.perf.http_p95_ms} ms`);
         makeCard('Summed test duration', current.summed_test_duration_seconds == null ? 'n/a' : `${current.summed_test_duration_seconds} s`, 'Not CI wall-clock duration');
+        makeCard('AI Triage Accuracy', current.ai?.accuracy == null ? 'n/a' : `${(current.ai.accuracy*100).toFixed(0)}%`, `${current.ai?.total || 0} labeled evals · ${current.ai?.provider || 'n/a'}`);
+        makeCard('AI Schema Compliance', current.ai?.schemaCompliance == null ? 'n/a' : `${(current.ai.schemaCompliance*100).toFixed(0)}%`, `${current.ai?.securityCases || 0} prompt-injection cases`);
       }
       loadQuality();
     </script>

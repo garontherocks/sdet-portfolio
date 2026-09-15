@@ -55,6 +55,9 @@ jobs:
           mkdir -p reports
           k6 run performance/smoke.test.js --summary-export reports/k6_smoke_summary.json
 
+      - name: Deterministic GenAI evaluation evidence
+        run: npm run ai:eval
+
       - name: Aggregate quality evidence
         if: always()
         run: node reports/aggregator/combine-metrics.js
@@ -80,6 +83,7 @@ jobs:
             playwright/allure-results/
             .lighthouseci/
             reports/k6_smoke_summary.json
+            reports/ai-evals.json
           if-no-files-found: error
       - name: Upload Pages artifact
         if: github.event_name != 'pull_request'

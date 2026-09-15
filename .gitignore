@@ -1,5 +1,6 @@
 # Dependencies and logs
 node_modules/
+ai/generated/review-required/*.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -23,6 +24,9 @@ playwright/allure-report/
 
 # Quality reports
 reports/quality.json
+reports/ai-evals.json
+reports/ai-triage.json
+reports/ai-triage.md
 reports/dashboards/index.html
 
 # Lighthouse and Percy

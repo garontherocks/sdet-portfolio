@@ -26,6 +26,9 @@ test('deduplicates Playwright retry attempts and Cypress failure aliases', () =>
   writeJson(root, 'playwright/allure-results/attempt-2-result.json', {
     historyId: 'login-chromium', name: 'login', status: 'passed', time: { start: 102, stop: 202, duration: 100 },
   });
+  writeJson(root, 'reports/ai-evals.json', {
+    total: 10, accuracy: 0.9, schemaCompliance: 1, securityCases: 2, averageLatencyMs: 125, provider: 'deterministic-mock',
+  });
 
   execFileSync(process.execPath, [aggregator.pathname], { cwd: root, stdio: 'pipe' });
   const quality = JSON.parse(fs.readFileSync(path.join(root, 'reports/quality.json'), 'utf8'));
@@ -34,4 +37,7 @@ test('deduplicates Playwright retry attempts and Cypress failure aliases', () =>
   assert.deepEqual(quality.suites.playwright, { tests: 1, passed: 1, failed: 0, skipped: 0, retries: 1 });
   assert.equal(quality.passRate, 0.6667);
   assert.equal(quality.summed_test_duration_seconds, 0.3);
+  assert.deepEqual(quality.ai, {
+    total: 10, accuracy: 0.9, schemaCompliance: 1, securityCases: 2, averageLatencyMs: 125, provider: 'deterministic-mock',
+  });
 });
