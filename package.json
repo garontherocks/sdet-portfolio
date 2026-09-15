@@ -1,37 +1,40 @@
 {
   "name": "sdet-portfolio",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "workspaces": [
     "cypress",
     "playwright"
   ],
   "scripts": {
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit -p playwright/tsconfig.json",
+    "quality": "npm run lint && npm run typecheck",
     "lhci": "lhci autorun",
     "k6:smoke": "k6 run performance/smoke.test.js",
+    "k6:load": "k6 run performance/load.test.js",
+    "k6:stress": "k6 run performance/stress.test.js",
     "data:users": "node tools/data-gen/generateUsers.js --count=20 --seed=42"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
+    "@faker-js/faker": "^9.1.0",
     "@lhci/cli": "^0.14.0",
     "@percy/cli": "^1.30.10",
     "@percy/cypress": "^3.1.6",
     "@percy/playwright": "^1.0.8",
-    "@percy/sdk-utils": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
-    "allure-commandline": "^2.33.0",
+    "@typescript-eslint/parser": "^8.29.0",
     "eslint": "^9.23.0",
-    "eslint-plugin-cypress": "^4.2.0",
-    "eslint-plugin-react": "^7.37.5",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
-    "@faker-js/faker": "^9.1.0",
-    "k6": "^0.0.0",
     "lint-staged": "^15.5.0",
-    "typescript-eslint": "^8.29.0"
+    "newman": "^6.2.1",
+    "typescript": "^5.8.2"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix"

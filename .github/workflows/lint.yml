@@ -3,24 +3,23 @@ name: ESLint Check
 on:
   push:
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: quality-static-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  lint:
+  static-analysis:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Install dependencies (with ci fallback)
-        shell: bash
-        run: |
-          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
-
-      - name: Run ESLint
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: ESLint
         run: npm run lint
+      - name: TypeScript typecheck
+        run: npm run typecheck

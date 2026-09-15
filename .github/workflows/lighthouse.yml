@@ -4,36 +4,29 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  lhci:
+  lighthouse:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Install dependencies (with ci fallback)
-        shell: bash
-        run: |
-          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
-
-      - name: Run Lighthouse CI
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run median-of-three Lighthouse audit
         run: npm run lhci
-
-      - name: Aggregate quality metrics
-        if: always()
-        working-directory: .
-        run: node reports/aggregator/combine-metrics.js
-
-      - name: Upload aggregated quality.json
+      - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: quality-json-lhci
-          path: reports/quality.json
+          name: lighthouse-reports
+          retention-days: 30
+          path: .lighthouseci/
+          if-no-files-found: error

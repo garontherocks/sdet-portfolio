@@ -1,22 +1,22 @@
 import { Page } from '@playwright/test';
 
 export class LoginPage {
-  constructor(private page: Page) {}
+  constructor(private readonly page: Page) {}
 
   async visit() {
-    await this.page.goto('https://www.saucedemo.com/');
+    await this.page.goto('/');
   }
 
   async fillUsername(username: string) {
-    await this.page.fill('[data-test="username"]', username);
+    await this.page.locator('[data-test="username"]').fill(username);
   }
 
   async fillPassword(password: string) {
-    await this.page.fill('[data-test="password"]', password);
+    await this.page.locator('[data-test="password"]').fill(password);
   }
 
   async clickLogin() {
-    await this.page.click('[data-test="login-button"]');
+    await this.page.locator('[data-test="login-button"]').click();
   }
 
   async loginAs(username: string, password: string) {
@@ -25,7 +25,7 @@ export class LoginPage {
     await this.clickLogin();
   }
 
-  async getErrorMessage() {
+  getErrorMessage() {
     return this.page.locator('[data-test="error"]');
   }
 }

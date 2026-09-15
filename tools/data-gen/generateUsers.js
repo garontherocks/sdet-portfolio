@@ -2,7 +2,6 @@
 // Usage: node tools/data-gen/generateUsers.js --count=20 --seed=42
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { existsSync } from 'node:fs';
 import { faker } from '@faker-js/faker';
 
 function parseArgs() {
@@ -78,4 +77,3 @@ async function main() {
 }
 
 main().catch(err => { console.error('[data-gen:error]', err); process.exit(1); });
-

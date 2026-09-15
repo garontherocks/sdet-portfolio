@@ -2,11 +2,13 @@ name: Reports Hub
 
 on:
   push:
+    branches: [main]
   pull_request:
-  workflow_run:
-    workflows: ["Cypress Tests", "Playwright Tests", "Lighthouse CI", "k6 Performance"]
-    types:
-      - completed
+  workflow_dispatch:
+
+concurrency:
+  group: reports-hub-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -14,80 +16,88 @@ permissions:
   id-token: write
 
 jobs:
-  aggregate:
+  build-quality-evidence:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Run aggregator
-        run: node reports/aggregator/combine-metrics.js
-
-      - name: Copy dashboard assets
-        run: |
-          mkdir -p reports/dashboards
-          cp reports/dashboards/dashboard.html reports/dashboards/index.html || true
-          # place quality.json alongside index.html for fetch()
-          cp reports/quality.json reports/dashboards/quality.json || true
-
-      - name: Upload dashboard artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: quality-dashboard
-          path: |
-            reports/quality.json
-            reports/dashboards/
-
-  quality-gates:
-    runs-on: ubuntu-latest
-    needs: aggregate
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      - name: Run aggregator (ensure quality.json exists)
-        run: node reports/aggregator/combine-metrics.js
-      - name: Enforce quality gates
-        id: gates
-        shell: bash
-        run: |
-          node scripts/quality-gates.js || code=$?; \
-          if [ "${code}" = "78" ]; then echo "unstable=true" >> $GITHUB_OUTPUT; exit 0; fi; \
-          if [ -n "${code}" ] && [ "${code}" != "0" ]; then exit ${code}; fi
-
-      - name: Notify (Slack/Teams if configured)
-        if: always()
-        run: node scripts/ci/notify.js
-
-  deploy-pages:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    needs: [aggregate]
+    env:
+      CYPRESS_REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
+      REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Build dashboard
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Cypress evidence
+        run: npm run run --workspace=cypress
+      - name: Merge Cypress results
+        if: always()
+        run: npm run report:merge --workspace=cypress
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+        working-directory: playwright
+      - name: Playwright evidence
+        run: npx playwright test --project=chromium
+        working-directory: playwright
+
+      - name: Lighthouse evidence
+        run: npm run lhci
+
+      - name: Install k6
         run: |
-          node reports/aggregator/combine-metrics.js
-          mkdir -p reports/dashboards
-          cp reports/dashboards/dashboard.html reports/dashboards/index.html || true
-          cp reports/quality.json reports/dashboards/quality.json || true
-      - name: Upload artifact
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates gnupg curl
+          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+          echo 'deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main' | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+      - name: k6 smoke evidence
+        run: |
+          mkdir -p reports
+          k6 run performance/smoke.test.js --summary-export reports/k6_smoke_summary.json
+
+      - name: Aggregate quality evidence
+        if: always()
+        run: node reports/aggregator/combine-metrics.js
+      - name: Enforce required evidence and thresholds
+        if: always()
+        run: node scripts/quality-gates.js
+
+      - name: Build dashboard
+        if: always()
+        run: |
+          cp reports/dashboards/dashboard.html reports/dashboards/index.html
+          cp reports/quality.json reports/dashboards/quality.json
+      - name: Upload complete quality evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-dashboard
+          retention-days: 30
+          path: |
+            reports/quality.json
+            reports/dashboards/
+            cypress/reports/mochawesome/
+            playwright/allure-results/
+            .lighthouseci/
+            reports/k6_smoke_summary.json
+          if-no-files-found: error
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: reports/dashboards
-      - name: Deploy to GitHub Pages
+
+  deploy-pages:
+    if: github.event_name != 'pull_request'
+    needs: build-quality-evidence
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy quality dashboard
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages

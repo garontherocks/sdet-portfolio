@@ -30,7 +30,6 @@ function getPrNumber() {
 
 function getChangedFiles() {
   const base = process.env.GITHUB_BASE_REF;
-  const head = process.env.GITHUB_HEAD_REF;
   try { sh('git fetch origin'); } catch {}
   if (base) {
     try { return sh(`git diff --name-only origin/${base}...HEAD`).split('\n').filter(Boolean); } catch {}
@@ -70,7 +69,7 @@ function getCommits() {
 }
 
 function buildBody(ctx) {
-  const { files, classes, commits, q } = ctx;
+  const { classes, commits, q } = ctx;
   const lines = [];
   lines.push('Areas afectadas:');
   for (const [k, v] of Object.entries(classes.areas)) lines.push(`- ${k}: ${v}`);
@@ -124,4 +123,3 @@ async function main() {
 }
 
 main().catch(e => { console.error('[pr-summary:error]', e); process.exit(1); });
-

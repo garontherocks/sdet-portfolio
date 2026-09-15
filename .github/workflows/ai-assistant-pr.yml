@@ -15,16 +15,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Verify gh availability
-        run: gh --version
-
-      - name: PR summary
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Post deterministic risk summary
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_EVENT_PATH: ${{ github.event_path }}
@@ -32,4 +28,3 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: node tools/ai/pr-summary.js
-
