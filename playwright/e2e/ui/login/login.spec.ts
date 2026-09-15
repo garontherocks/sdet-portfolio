@@ -10,7 +10,7 @@ test.describe('SauceDemo - Login', () => {
     await loginPage.visit();
   });
 
-  test('should login successfully with standard user', async ({ page }) => {
+  test('should login successfully with standard user @smoke', async ({ page }) => {
     await loginPage.loginAs(users.validStandard.username, users.validStandard.password);
     await expect(page).toHaveURL(/.*inventory/);
     await expect(page.locator('.inventory_list')).toBeVisible();

@@ -2,6 +2,13 @@ name: Percy Visual Tests (Playwright)
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'playwright/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/percy-playwright.yml'
   pull_request:
     paths:
       - 'playwright/**'
@@ -23,7 +30,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
         working-directory: playwright
-      - name: Run deterministic Chromium visual spec
+      - name: Upload deterministic Chromium snapshots to Percy
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
         run: npm run percy:playwright --workspace=playwright

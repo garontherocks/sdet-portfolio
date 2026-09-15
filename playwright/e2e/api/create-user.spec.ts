@@ -4,7 +4,7 @@ import { users } from '../../test-data/users';
 const { apiCreateUser } = users;
 
 test.describe('ReqRes API - Create User', () => {
-  test('creates a new user successfully', async ({ request }) => {
+  test('creates a new user successfully @smoke', async ({ request }) => {
     const response = await request.post('https://reqres.in/api/users', {
       headers: { 'content-type': 'application/json' },
       data: apiCreateUser,

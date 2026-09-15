@@ -10,7 +10,7 @@
 [![Lint](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/lint.yml)
 [![Postman CI](https://github.com/garontherocks/sdet-portfolio/actions/workflows/postman-tests.yml/badge.svg)](https://github.com/garontherocks/sdet-portfolio/actions/workflows/postman-tests.yml)
 
-This public portfolio demonstrates practical SDET work with JavaScript, TypeScript and CI/CD. Browser scenarios target [SauceDemo](https://www.saucedemo.com/); authenticated API examples target [ReqRes](https://reqres.in/).
+This public portfolio demonstrates practical SDET work with JavaScript, TypeScript and CI/CD. Browser scenarios target [SauceDemo](https://www.saucedemo.com/); anonymous demo API examples target [ReqRes](https://reqres.in/).
 
 The emphasis is trustworthy evidence: tests assert one intended API contract, load profiles use native thresholds, and the quality dashboard fails when required source reports are absent.
 
@@ -70,7 +70,7 @@ npm run test --workspace=playwright
 npm run test:smoke --workspace=playwright
 ```
 
-CI runs two shards across Chromium, Firefox and WebKit and retains Allure results plus traces, screenshots and videos for failures.
+CI runs two shards across Chromium, Firefox and WebKit, then publishes one merged HTML/Allure report covering the complete run.
 
 ### Visual tests
 
@@ -79,7 +79,9 @@ npm run percy:exec --workspace=cypress
 npm run percy:playwright --workspace=playwright
 ```
 
-The visual workflows intentionally execute only the deterministic cart snapshot specs. They require `PERCY_TOKEN`.
+The visual workflows intentionally execute only the deterministic cart snapshot specs. They require `PERCY_TOKEN` and run for relevant pull requests and `main` changes.
+
+The green GitHub Actions badges mean that the snapshot tests completed and Percy accepted the uploads. Percy review is intentionally separate: when Percy detects a visual difference, the baseline is updated only after a manual review in Percy. The external Percy review status should therefore not be configured as a required GitHub merge check for this portfolio.
 
 ### Lighthouse
 
@@ -101,7 +103,7 @@ Smoke and load run in CI. Stress is an explicit manual workflow option to avoid 
 
 ## Quality dashboard
 
-`reports-hub.yml` generates Cypress, Playwright Chromium, Lighthouse and k6 evidence in the same job before aggregating it. The build fails if any required evidence is missing or violates its threshold. Successful `main` runs publish the dashboard to GitHub Pages.
+`reports-hub.yml` generates Cypress, Playwright Chromium, Lighthouse and k6 evidence in the same job before aggregating it. The build fails if any required evidence is missing or violates its threshold. Successful `main` runs publish the current-run dashboard to GitHub Pages; historical trends are intentionally omitted until durable history is available.
 
 ## Roadmap status
 
