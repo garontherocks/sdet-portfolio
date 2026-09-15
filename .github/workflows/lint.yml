@@ -2,7 +2,21 @@ name: ESLint Check
 
 on:
   push:
+    paths:
+      - '**/*.js'
+      - '**/*.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'eslint.config.js'
+      - '.github/workflows/lint.yml'
   pull_request:
+    paths:
+      - '**/*.js'
+      - '**/*.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'eslint.config.js'
+      - '.github/workflows/lint.yml'
   workflow_dispatch:
 
 concurrency:

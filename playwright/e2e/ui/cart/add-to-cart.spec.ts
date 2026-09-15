@@ -20,7 +20,7 @@ test.describe('Cart UI - Add Single Product', () => {
     await loginPage.loginAs(validStandard.username, validStandard.password);
   });
 
-  test('should add a single product and update cart count', async ({ page }) => {
+  test('should add a single product and update cart count @smoke', async ({ page }) => {
     await cartPage.addProductByName(productA);
     await cartPage.assertCartCount(1);
     await cartPage.goToCart();

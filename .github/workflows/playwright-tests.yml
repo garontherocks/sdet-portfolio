@@ -2,7 +2,17 @@ name: Playwright Tests
 
 on:
   push:
+    paths:
+      - 'playwright/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/playwright-tests.yml'
   pull_request:
+    paths:
+      - 'playwright/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/playwright-tests.yml'
   workflow_dispatch:
 
 concurrency:
@@ -26,20 +36,49 @@ jobs:
       - run: npx playwright install --with-deps
         working-directory: playwright
       - name: Run Playwright shard
-        run: npx playwright test --shard=${{ matrix.shard }}/2
+        run: npx playwright test --shard=${{ matrix.shard }}/2 --reporter=blob
         working-directory: playwright
-      - name: Generate Allure HTML
-        if: always()
-        run: npx allure generate allure-results -o allure-report --clean
-        working-directory: playwright
-      - name: Upload Playwright evidence
+      - name: Upload Playwright shard evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-evidence-shard-${{ matrix.shard }}
+          name: playwright-blob-shard-${{ matrix.shard }}
+          retention-days: 30
+          path: playwright/blob-report/*.zip
+          if-no-files-found: error
+
+  merge-playwright-report:
+    if: always()
+    needs: playwright-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Download all Playwright shard reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: playwright-blob-shard-*
+          path: playwright/all-blob-reports
+          merge-multiple: true
+      - name: Generate merged HTML report
+        run: npx playwright merge-reports --reporter=html all-blob-reports
+        working-directory: playwright
+      - name: Generate merged Allure results and report
+        run: |
+          npx playwright merge-reports --reporter=allure-playwright all-blob-reports || test -d allure-results
+          npx allure generate allure-results -o allure-report --clean
+        working-directory: playwright
+      - name: Upload merged Playwright evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-evidence-merged
           retention-days: 30
           path: |
+            playwright/playwright-report/
             playwright/allure-results/
             playwright/allure-report/
-            playwright/test-results/
           if-no-files-found: error

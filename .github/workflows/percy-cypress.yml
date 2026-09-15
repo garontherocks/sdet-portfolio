@@ -2,6 +2,13 @@ name: Percy Visual Tests (Cypress)
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'cypress/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/percy-cypress.yml'
   pull_request:
     paths:
       - 'cypress/**'
@@ -21,8 +28,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Run deterministic Cypress visual spec
+      - name: Upload deterministic Cypress snapshots to Percy
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-          CYPRESS_REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
         run: npm run percy:exec --workspace=cypress

@@ -82,7 +82,8 @@ async function readCypressMochawesome() {
     const s = json.stats || {};
     const tests = s.tests ?? 0;
     const passed = s.passes ?? 0;
-    const failed = (s.failures ?? 0) + (s.failuresTotal ?? 0);
+    // Mochawesome variants expose either field; they represent the same total.
+    const failed = s.failuresTotal ?? s.failures ?? 0;
     const skipped = (s.pending ?? 0) + (s.skipped ?? 0);
     const duration = s.duration ?? 0; // ms
     totals.tests += tests;
@@ -120,10 +121,20 @@ async function readPlaywrightAllure() {
     return { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, retries: 0 };
   }
   const entries = await listFilesRecursive(base, p => /-result\.json$/i.test(p));
-  let totals = { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, retries: 0 };
+  const attemptsByTest = new Map();
   for (const { path: p } of entries) {
     const r = await readJSON(p);
     if (!r) continue;
+    const key = r.historyId || r.testCaseId || r.fullName || r.name || p;
+    const attempts = attemptsByTest.get(key) || [];
+    attempts.push(r);
+    attemptsByTest.set(key, attempts);
+  }
+
+  const totals = { tests: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0, retries: 0 };
+  for (const attempts of attemptsByTest.values()) {
+    attempts.sort((a, b) => (a.time?.stop ?? 0) - (b.time?.stop ?? 0));
+    const r = attempts.at(-1);
     totals.tests += 1;
     const status = (r.status || '').toLowerCase();
     if (status === 'passed') totals.passed += 1;
@@ -131,8 +142,10 @@ async function readPlaywrightAllure() {
     else totals.failed += 1; // failed/broken/unknown → failed
     const dur = r.time?.duration ?? (r.time?.stop && r.time?.start ? (r.time.stop - r.time.start) : 0);
     totals.durationMs += Number.isFinite(dur) ? dur : 0;
-    // Retries (best-effort): mark retry/flaky as a retry count increment
-    if (r.retry === true || r.statusDetails?.flaky === true) totals.retries += 1;
+    totals.retries += Math.max(0, attempts.length - 1);
+    if (attempts.length === 1 && (r.retry === true || r.statusDetails?.flaky === true)) {
+      totals.retries += 1;
+    }
   }
   log('Playwright totals:', totals);
   return totals;
@@ -268,7 +281,7 @@ async function main() {
     perf: {
       http_p95_ms: k6.http_p95_ms,
     },
-    ttt_seconds: tttSeconds,
+    summed_test_duration_seconds: tttSeconds,
   };
 
   const outDir = path.join(process.cwd(), 'reports');

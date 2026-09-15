@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p playwright/tsconfig.json",
     "quality": "npm run lint && npm run typecheck",
+    "test:aggregator": "node --test reports/aggregator/combine-metrics.test.js",
     "lhci": "lhci autorun",
     "k6:smoke": "k6 run performance/smoke.test.js",
     "k6:load": "k6 run performance/load.test.js",

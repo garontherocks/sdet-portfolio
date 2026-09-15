@@ -14,16 +14,12 @@
       h2 { font-size: 14px; margin: 0 0 8px 0; }
       pre { white-space: pre-wrap; word-break: break-word; }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   </head>
   <body>
     <h1>Quality Dashboard</h1>
     <div id="meta" class="muted"></div>
 
     <div class="grid" id="cards"></div>
-
-    <h2 style="margin-top:16px">Trend</h2>
-    <canvas id="trend" width="600" height="200"></canvas>
 
     <script>
       async function fetchJSON(p) { try { const r = await fetch(p); if (!r.ok) throw new Error(r.statusText); return await r.json(); } catch { return null; } }
@@ -45,23 +41,11 @@
         makeCard('Pass Rate', toPct(current.passRate), `Fail: ${toPct(current.failRate)}`);
         makeCard('Flakiness', current.flakinessRate == null ? 'n/a' : `${current.flakinessRate.toFixed(2)}%`, 'retries/tests');
         makeCard('Lighthouse Perf', current.lighthouse?.performance == null ? 'n/a' : `${(current.lighthouse.performance*100).toFixed(0)}%`, 'accessibility, best-practices, seo in JSON');
-        makeCard('Visual Diff', current.visual?.diffRate == null ? 'n/a' : `${(current.visual.diffRate*100).toFixed(2)}%`);
+        makeCard('Visual Review', current.visual?.diffRate == null ? 'Review in Percy' : `${(current.visual.diffRate*100).toFixed(2)}%`, 'Manual approval is separate from snapshot upload');
         makeCard('HTTP p95', current.perf?.http_p95_ms == null ? 'n/a' : `${current.perf.http_p95_ms} ms`);
-        makeCard('TTT', current.ttt_seconds == null ? 'n/a' : `${current.ttt_seconds} s`);
-
-        // Trend: attempt to load quality-1.json..quality-10.json
-        const trend = [current];
-        for (let i=1;i<=10;i++) {
-          const q = await fetchJSON(`../quality-${i}.json`) || await fetchJSON(`quality-${i}.json`);
-          if (q) trend.push(q);
-        }
-        const labels = trend.map(t => new Date(t.timestamp).toLocaleString());
-        const data = trend.map(t => t.passRate == null ? 0 : +(t.passRate*100).toFixed(1));
-        const ctx = document.getElementById('trend');
-        new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Pass %', data, tension:.2, borderColor: '#2b6cb0' }] }, options: { scales: { y: { min: 0, max: 100 }}}});
+        makeCard('Summed test duration', current.summed_test_duration_seconds == null ? 'n/a' : `${current.summed_test_duration_seconds} s`, 'Not CI wall-clock duration');
       }
       loadQuality();
     </script>
   </body>
   </html>
-

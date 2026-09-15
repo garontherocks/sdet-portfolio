@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      test-tooling:
+        patterns:
+          - '@playwright/*'
+          - '@percy/*'
+          - 'cypress'
+          - 'allure-*'
+      static-analysis:
+        patterns:
+          - 'eslint'
+          - '@eslint/*'
+          - '@typescript-eslint/*'
+          - 'typescript'
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns:
+          - '*'

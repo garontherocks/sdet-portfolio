@@ -107,8 +107,11 @@ function postComment(pr, body) {
     console.log('[pr-summary] missing repo or PR number');
     return;
     }
-  const cmd = `gh api repos/${repo}/issues/${pr}/comments -f body=@-`;
-  execSync(cmd, { input: body, stdio: ['pipe', 'inherit', 'inherit'] });
+  const cmd = `gh api --method POST repos/${repo}/issues/${pr}/comments --input -`;
+  execSync(cmd, {
+    input: JSON.stringify({ body }),
+    stdio: ['pipe', 'inherit', 'inherit'],
+  });
 }
 
 async function main() {
