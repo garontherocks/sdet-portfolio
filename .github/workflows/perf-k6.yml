@@ -34,7 +34,7 @@ jobs:
       matrix:
         suite: [smoke, load]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install k6
         run: |
           sudo apt-get update
@@ -49,7 +49,7 @@ jobs:
           k6 run performance/${{ matrix.suite }}.test.js --summary-export reports/k6_${{ matrix.suite }}_summary.json
       - name: Upload k6 evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: k6-${{ matrix.suite }}-summary
           retention-days: 30
@@ -60,7 +60,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.include_stress
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install k6
         run: |
           sudo apt-get update
@@ -72,7 +72,7 @@ jobs:
       - run: |
           mkdir -p reports
           k6 run performance/stress.test.js --summary-export reports/k6_stress_summary.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: k6-stress-summary
