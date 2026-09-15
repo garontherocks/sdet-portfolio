@@ -69,7 +69,7 @@ jobs:
         working-directory: playwright
       - name: Generate merged Allure results and report
         run: |
-          npx playwright merge-reports --reporter=allure-playwright all-blob-reports
+          npx playwright merge-reports --reporter=allure-playwright all-blob-reports || test -d allure-results
           npx allure generate allure-results -o allure-report --clean
         working-directory: playwright
       - name: Upload merged Playwright evidence
