@@ -44,9 +44,7 @@ jobs:
         with:
           name: playwright-blob-shard-${{ matrix.shard }}
           retention-days: 30
-          path: |
-            playwright/blob-report/
-            playwright/test-results/
+          path: playwright/blob-report/*.zip
           if-no-files-found: error
 
   merge-playwright-report:
