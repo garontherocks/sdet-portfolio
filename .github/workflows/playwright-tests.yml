@@ -27,8 +27,8 @@ jobs:
       matrix:
         shard: [1, 2]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -40,7 +40,7 @@ jobs:
         working-directory: playwright
       - name: Upload Playwright shard evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-blob-shard-${{ matrix.shard }}
           retention-days: 30
@@ -52,14 +52,14 @@ jobs:
     needs: playwright-run
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
       - run: npm ci
       - name: Download all Playwright shard reports
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: playwright-blob-shard-*
           path: playwright/all-blob-reports
@@ -73,7 +73,7 @@ jobs:
           npx allure generate allure-results -o allure-report --clean
         working-directory: playwright
       - name: Upload merged Playwright evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-evidence-merged
           retention-days: 30

@@ -19,8 +19,8 @@ jobs:
   build-quality-evidence:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -72,7 +72,7 @@ jobs:
           cp reports/quality.json reports/dashboards/quality.json
       - name: Upload complete quality evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: quality-dashboard
           retention-days: 30
@@ -87,7 +87,7 @@ jobs:
           if-no-files-found: error
       - name: Upload Pages artifact
         if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: reports/dashboards
 
@@ -101,4 +101,4 @@ jobs:
     steps:
       - name: Deploy quality dashboard
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
