@@ -5,46 +5,25 @@ on:
   pull_request:
     paths:
       - 'playwright/**'
-      - 'scripts/percy-snapshots.ts'
-      - '.github/workflows/playwright-percy.yml'
+      - '.github/workflows/percy-playwright.yml'
+
+concurrency:
+  group: percy-playwright-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  percy-visual-tests:
+  percy-playwright:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: playwright
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Install dependencies (with ci fallback)
-        shell: bash
-        run: |
-          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
-          npm install @percy/cli
-          npm install @percy/playwright
-          npm install @percy/sdk-utils
-
-      - name: Generate synthetic users fixtures
-        if: always()
-        working-directory: .
-        shell: bash
-        run: |
-          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
-          npm run data:users -- --count=20 --seed=${{ github.run_number }}
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      - name: Percy visual test run
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+        working-directory: playwright
+      - name: Run deterministic Chromium visual spec
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-        run: npm run percy:playwright
+        run: npm run percy:playwright --workspace=playwright

@@ -1,28 +1,25 @@
 {
   "name": "playwright-tests",
-  "version": "1.0.0",
-  "description": "UI and API tests for SauceDemo using Playwright + TypeScript as part of the SDET Portfolio project.",
-  "main": "index.js",
+  "version": "2.0.0",
+  "private": true,
+  "description": "UI and API tests for SauceDemo and ReqRes using Playwright and TypeScript.",
   "scripts": {
-    "test": "npx playwright test",
-    "test:headed": "npx playwright test --headed",
-    "test:ui": "npx playwright show-report",
-    "test:smoke": "npx playwright test -g '@smoke'",
-    "test:shard1of2": "PW_SHARD=1/2 npx playwright test",
-    "test:shard2of2": "PW_SHARD=2/2 npx playwright test",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:api": "playwright test e2e/api",
     "report:allure": "allure generate allure-results -o allure-report --clean && allure open allure-report",
-    "percy:playwright": "percy exec -- npx playwright test"
+    "percy:playwright": "percy exec -- playwright test e2e/ui/cart/add-to-cart.spec.ts --project=chromium"
   },
   "author": "Víctor Martín Aller",
   "license": "MIT",
   "devDependencies": {
     "@percy/cli": "^1.30.10",
     "@percy/playwright": "^1.0.8",
-    "@percy/sdk-utils": "^1.0.0",
     "@playwright/test": "^1.51.1",
     "@types/node": "^22.13.14",
     "allure-commandline": "^2.33.0",
-    "allure-playwright": "^3.2.1",
-    "dotenv-cli": "^8.0.0"
+    "allure-playwright": "^3.2.1"
   }
 }

@@ -3,28 +3,18 @@ import { users } from '../../test-data/users';
 const { apiCreateUser } = users;
 
 describe('ReqRes API - Create User', () => {
-  const apiKey = Cypress.env('REQRES_API_KEY');
-  const maybeAuthHeaders = apiKey ? { 'x-api-key': apiKey } : {};
-
-  it('should create a new user successfully (handles optional API key)', () => {
+  it('creates a new user successfully', () => {
     cy.request({
       method: 'POST',
       url: 'https://reqres.in/api/users',
-      headers: { ...maybeAuthHeaders, 'Content-Type': 'application/json' },
-      failOnStatusCode: false,
-      body: {
-        name: apiCreateUser.name,
-        job: apiCreateUser.job
-      },
+      headers: { 'Content-Type': 'application/json' },
+      body: apiCreateUser,
     }).then((response) => {
-      if (apiKey) {
-        expect(response.status).to.eq(201);
-        expect(response.body).to.have.property('id');
-        expect(response.body).to.have.property('createdAt');
-      } else {
-        expect(response.status).to.eq(401);
-        expect(response.body).to.have.property('error', 'Missing API key');
-      }
+      expect(response.status).to.eq(201);
+      expect(response.headers['content-type']).to.include('application/json');
+      expect(response.body).to.include({ name: apiCreateUser.name, job: apiCreateUser.job });
+      expect(response.body).to.have.property('id').and.not.be.empty;
+      expect(response.body).to.have.property('createdAt').and.not.be.empty;
     });
   });
 });

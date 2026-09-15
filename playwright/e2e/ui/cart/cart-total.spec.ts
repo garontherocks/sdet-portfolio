@@ -32,7 +32,10 @@ test.describe('Cart UI - Total Calculation', () => {
   });
 
   test('should correctly calculate the item subtotal', async () => {
-    const expectedTotal = productsToAdd.reduce((sum, product) => sum + prices[product], 0);
+    const expectedTotal = productsToAdd.reduce(
+      (sum, product) => sum + prices[product as keyof typeof prices],
+      0,
+    );
     await cartPage.assertSubtotal(expectedTotal);
   });
 });

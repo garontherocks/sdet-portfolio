@@ -1,63 +1,45 @@
 name: Playwright Tests
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: playwright-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   playwright-run:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: playwright
-
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Install dependencies (with ci fallback)
-        shell: bash
-        run: |
-          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
-
-      - name: Generate synthetic users fixtures
-        if: always()
-        working-directory: .
-        shell: bash
-        run: |
-          if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
-          npm run data:users -- --count=20 --seed=${{ github.run_number }}
-
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npx playwright install --with-deps
-
-      - name: Run Playwright tests with Allure
-        run: npx playwright test --reporter=list,allure-playwright
-
-      - name: Generate Allure HTML report
+        working-directory: playwright
+      - name: Run Playwright shard
+        run: npx playwright test --shard=${{ matrix.shard }}/2
+        working-directory: playwright
+      - name: Generate Allure HTML
+        if: always()
         run: npx allure generate allure-results -o allure-report --clean
-
-      - name: Upload Allure results
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-allure-results
-          path: allure-results
-
-      - name: Upload Allure HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-allure-html
-          path: allure-report
-
-      - name: Aggregate quality metrics
-        if: always()
-        working-directory: .
-        run: node reports/aggregator/combine-metrics.js
-
-      - name: Upload aggregated quality.json
+        working-directory: playwright
+      - name: Upload Playwright evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: quality-json-playwright
-          path: reports/quality.json
+          name: playwright-evidence-shard-${{ matrix.shard }}
+          retention-days: 30
+          path: |
+            playwright/allure-results/
+            playwright/allure-report/
+            playwright/test-results/
+          if-no-files-found: error

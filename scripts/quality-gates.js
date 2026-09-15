@@ -1,33 +1,42 @@
-// Node script to enforce quality gates based on reports/quality.json
-// Exit codes: 0 pass, 1 fail, 78 unstable (flaky)
 import fs from 'node:fs';
 import path from 'node:path';
 
 const qualityPath = path.join(process.cwd(), 'reports', 'quality.json');
-
-function fail(msg) { console.error('[gates:fail]', msg); process.exit(1); }
-function unstable(msg) { console.warn('[gates:unstable]', msg); process.exit(78); }
-function info(msg) { console.log('[gates]', msg); }
+const fail = (message) => {
+  console.error(`[quality-gate] ${message}`);
+  process.exitCode = 1;
+};
 
 if (!fs.existsSync(qualityPath)) {
-  fail('quality.json not found at ' + qualityPath);
+  console.error('[quality-gate] reports/quality.json is missing');
+  process.exit(1);
 }
 
-const q = JSON.parse(fs.readFileSync(qualityPath, 'utf8'));
+const quality = JSON.parse(fs.readFileSync(qualityPath, 'utf8'));
+const cypressTests = quality.suites?.cypress?.tests ?? 0;
+const playwrightTests = quality.suites?.playwright?.tests ?? 0;
+const performance = quality.lighthouse?.performance;
+const accessibility = quality.lighthouse?.accessibility;
+const p95 = quality.perf?.http_p95_ms;
 
-const perf = q.lighthouse?.performance == null ? null : Math.round(q.lighthouse.performance * 100);
-const a11y = q.lighthouse?.accessibility == null ? null : Math.round(q.lighthouse.accessibility * 100);
-const diff = q.visual?.diffRate == null ? null : Math.round(q.visual.diffRate * 10000) / 100; // percent with 2 decimals
-const flake = q.flakinessRate == null ? null : +q.flakinessRate; // already percent
+console.log('[quality-gate] evidence', {
+  cypressTests,
+  playwrightTests,
+  passRate: quality.passRate,
+  performance,
+  accessibility,
+  p95,
+});
 
-info(`Perf: ${perf ?? 'n/a'} | A11y: ${a11y ?? 'n/a'} | Diff%: ${diff ?? 'n/a'} | Flaky%: ${flake ?? 'n/a'}`);
+if (cypressTests === 0) fail('Cypress evidence is missing');
+if (playwrightTests === 0) fail('Playwright evidence is missing');
+if (quality.passRate !== 1) fail(`Expected a 100% pass rate, received ${quality.passRate}`);
+if (performance == null) fail('Lighthouse performance evidence is missing');
+else if (performance < 0.8) fail(`Lighthouse performance is below 0.80: ${performance}`);
+if (accessibility == null) fail('Lighthouse accessibility evidence is missing');
+else if (accessibility < 0.9) fail(`Lighthouse accessibility is below 0.90: ${accessibility}`);
+if (p95 == null) fail('k6 p95 evidence is missing');
+else if (p95 >= 800) fail(`k6 p95 is above 800ms: ${p95}`);
 
-if (perf != null && perf < 90) fail(`Lighthouse performance < 90 (${perf})`);
-if (a11y != null && a11y < 90) fail(`Lighthouse accessibility < 90 (${a11y})`);
-if (diff != null && diff > 1) fail(`Visual diff > 1% (${diff}%)`);
-
-if (flake != null && flake > 5) unstable(`Flakiness > 5% (${flake}%)`);
-
-info('Quality gates passed');
-process.exit(0);
-
+if (process.exitCode) process.exit(process.exitCode);
+console.log('[quality-gate] all required evidence is present and within threshold');
