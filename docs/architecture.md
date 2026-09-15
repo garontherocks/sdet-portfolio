@@ -3,14 +3,14 @@
 This repository demonstrates a compact quality engineering system against two public test services:
 
 - SauceDemo for browser, visual and synthetic performance checks.
-- ReqRes for authenticated API contract examples.
+- ReqRes anonymous demo endpoints for API contract examples.
 
 ## Test layers
 
 | Layer | Tooling | Purpose |
 |---|---|---|
 | Static analysis | ESLint, TypeScript | Catch syntax, style and type defects before execution |
-| API | Cypress, Playwright, Newman | Validate authenticated success and negative contracts |
+| API | Cypress, Playwright, Newman | Validate success and negative contracts against the anonymous demo API |
 | UI | Cypress, Playwright | Validate critical login, cart and checkout behavior |
 | Visual | Percy | Detect deterministic UI regressions in selected Chromium scenarios |
 | Synthetic audit | Lighthouse CI | Track third-party page performance and accessibility |
@@ -24,4 +24,4 @@ External demo services can introduce noise. Thresholds are intentionally conserv
 
 ## Secrets
 
-`REQRES_API_KEY` is required for authenticated API suites. `PERCY_TOKEN` is required only for visual workflows. Workflows pass secrets explicitly; tests never turn a missing credential into a passing alternate assertion.
+`PERCY_TOKEN` is required only for visual workflows. The ReqRes examples use its anonymous, rate-limited demo endpoints and assert one intended contract rather than accepting alternate statuses.

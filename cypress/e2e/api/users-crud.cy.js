@@ -1,15 +1,7 @@
 describe('ReqRes API - Users CRUD', () => {
   const baseUrl = 'https://reqres.in/api';
-  let headers;
-
-  before(() => {
-    const apiKey = Cypress.env('REQRES_API_KEY');
-    expect(apiKey, 'REQRES_API_KEY must be configured').to.be.a('string').and.not.be.empty;
-    headers = { 'x-api-key': apiKey };
-  });
-
   it('lists users with contract checks', () => {
-    cy.request({ method: 'GET', url: `${baseUrl}/users?page=2`, headers }).then((response) => {
+    cy.request({ method: 'GET', url: `${baseUrl}/users?page=2` }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.headers['content-type']).to.include('application/json');
       expect(response.body).to.include.keys('page', 'per_page', 'total', 'data');
@@ -21,7 +13,7 @@ describe('ReqRes API - Users CRUD', () => {
   });
 
   it('gets a single user', () => {
-    cy.request({ method: 'GET', url: `${baseUrl}/users/2`, headers }).then((response) => {
+    cy.request({ method: 'GET', url: `${baseUrl}/users/2` }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body.data).to.include({ id: 2 });
       expect(response.body.data.email).to.match(/^\S+@\S+\.\S+$/);
@@ -32,7 +24,7 @@ describe('ReqRes API - Users CRUD', () => {
     cy.request({
       method: 'PUT',
       url: `${baseUrl}/users/2`,
-      headers: { ...headers, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: { name: 'John', job: 'Senior SDET' },
     }).then((response) => {
       expect(response.status).to.eq(200);
@@ -42,7 +34,7 @@ describe('ReqRes API - Users CRUD', () => {
   });
 
   it('deletes a user', () => {
-    cy.request({ method: 'DELETE', url: `${baseUrl}/users/2`, headers }).then((response) => {
+    cy.request({ method: 'DELETE', url: `${baseUrl}/users/2` }).then((response) => {
       expect(response.status).to.eq(204);
       expect(response.body).to.be.empty;
     });

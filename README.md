@@ -12,7 +12,7 @@
 
 This public portfolio demonstrates practical SDET work with JavaScript, TypeScript and CI/CD. Browser scenarios target [SauceDemo](https://www.saucedemo.com/); authenticated API examples target [ReqRes](https://reqres.in/).
 
-The emphasis is trustworthy evidence: tests do not pass by accepting missing credentials, load profiles use native thresholds, and the quality dashboard fails when required source reports are absent.
+The emphasis is trustworthy evidence: tests assert one intended API contract, load profiles use native thresholds, and the quality dashboard fails when required source reports are absent.
 
 ## Coverage
 
@@ -20,7 +20,7 @@ The emphasis is trustworthy evidence: tests do not pass by accepting missing cre
 |---|---|
 | Cypress UI | Standard and locked login, cart add/remove, subtotal and checkout |
 | Playwright UI | Equivalent critical flows across Chromium, Firefox and WebKit |
-| API | Authenticated create, list, read, update, delete and negative login examples |
+| API | Anonymous demo create, list, read, update, delete and negative login examples |
 | Reporting | Mochawesome, Allure and retained failure diagnostics |
 | Visual | Focused deterministic cart snapshots with Percy |
 | Web quality | Median-of-three Lighthouse performance and accessibility audits |
@@ -43,7 +43,7 @@ scripts/                 Quality gates and CI helpers
 
 ## Getting started
 
-Prerequisites: Node.js 22+, npm and a `REQRES_API_KEY` for API tests.
+Prerequisites: Node.js 22+ and npm.
 
 ```bash
 git clone https://github.com/garontherocks/sdet-portfolio.git

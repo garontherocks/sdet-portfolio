@@ -4,13 +4,10 @@ const { apiCreateUser } = users;
 
 describe('ReqRes API - Create User', () => {
   it('creates a new user successfully', () => {
-    const apiKey = Cypress.env('REQRES_API_KEY');
-    expect(apiKey, 'REQRES_API_KEY must be configured').to.be.a('string').and.not.be.empty;
-
     cy.request({
       method: 'POST',
       url: 'https://reqres.in/api/users',
-      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: apiCreateUser,
     }).then((response) => {
       expect(response.status).to.eq(201);

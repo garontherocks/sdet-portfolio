@@ -19,7 +19,7 @@ npm run test:api --workspace=playwright
 npm run k6:smoke
 ```
 
-Authenticated ReqRes tests require `REQRES_API_KEY`. Percy runs require `PERCY_TOKEN`.
+Percy runs require `PERCY_TOKEN`. ReqRes tests use the anonymous, rate-limited demo API.
 
 ## Pull requests
 

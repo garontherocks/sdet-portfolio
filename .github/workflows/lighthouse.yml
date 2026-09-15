@@ -30,3 +30,4 @@ jobs:
           retention-days: 30
           path: .lighthouseci/
           if-no-files-found: error
+          include-hidden-files: true

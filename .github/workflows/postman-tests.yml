@@ -15,8 +15,6 @@ on:
 jobs:
   newman:
     runs-on: ubuntu-latest
-    env:
-      REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,13 +22,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Require API credential
-        run: test -n "$REQRES_API_KEY"
       - name: Run collection
         run: >-
           npx newman run postman/SDET-Portfolio-ReqRes.postman_collection.json
           -e postman/SDET-Portfolio-Env.postman_environment.json
-          --env-var apiKey="$REQRES_API_KEY"
           --reporters cli,junit
           --reporter-junit-export reports/newman.xml
       - uses: actions/upload-artifact@v4

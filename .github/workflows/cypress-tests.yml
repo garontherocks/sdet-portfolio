@@ -12,8 +12,6 @@ concurrency:
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    env:
-      CYPRESS_REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

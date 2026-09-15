@@ -5,11 +5,8 @@ const { apiLoginMissingPassword } = users;
 
 test.describe('ReqRes API - Login Negative', () => {
   test('returns 400 when password is missing', async ({ request }) => {
-    const apiKey = process.env.REQRES_API_KEY;
-    expect(apiKey, 'REQRES_API_KEY must be configured').toBeTruthy();
-
     const response = await request.post('https://reqres.in/api/login', {
-      headers: { 'content-type': 'application/json', 'x-api-key': apiKey! },
+      headers: { 'content-type': 'application/json' },
       data: { email: apiLoginMissingPassword.email },
     });
 
