@@ -16,7 +16,7 @@
   "author": "Víctor Martín Aller",
   "license": "MIT",
   "devDependencies": {
-    "cypress": "^14.2.1",
+    "cypress": "^16.0.0",
     "mochawesome": "^8.1.0",
     "mochawesome-merge": "^5.0.0",
     "mochawesome-report-generator": "^6.2.0"
