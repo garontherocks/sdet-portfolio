@@ -34,3 +34,7 @@ OPENAI_API_KEY=... AI_MODEL=gpt-5-mini npm run ai:eval:live
 ```
 
 The manual `AI Failure Triage` workflow accepts a PR number, test name and failure evidence. It posts an escaped advisory comment using either the deterministic provider or the optional live model. Selecting the live model requires the repository `OPENAI_API_KEY` secret; `AI_MODEL` can be set as a repository variable.
+
+## Companion AI-first agent
+
+The separate [AI-first quality agent](https://github.com/garontherocks/ai-first-quality-agent) extends these foundations with bounded MCP tools, approval-gated execution, lifecycle hooks, redacted telemetry and adversarial safety gates. Its versioned evidence contract is reviewed and validated here; see [AI-first quality agent integration](ai-first-quality-agent.md). Keeping the projects separate makes their responsibilities clear while providing one auditable portfolio story.

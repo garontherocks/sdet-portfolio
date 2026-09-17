@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "ai-first-quality-evidence/v1",
+  "release": "1.0.0",
+  "status": "complete",
+  "source": {
+    "repository": "https://github.com/garontherocks/ai-first-quality-agent",
+    "workflow": "https://github.com/garontherocks/ai-first-quality-agent/actions/workflows/ci.yml",
+    "artifactName": "quality-evidence-v1"
+  },
+  "evaluation": {
+    "reportVersion": "adversarial.v1",
+    "provider": "deterministic-mock",
+    "minimumPassRate": 1,
+    "minimumCategoryPassRate": 1,
+    "requiredCategories": [
+      "prompt_injection",
+      "approval_bypass",
+      "schema_drift",
+      "tool_selection",
+      "secret_redaction"
+    ],
+    "expectedCostUsd": 0
+  },
+  "safetyClaims": [
+    "model output is schema validated",
+    "test execution requires server-validated approval",
+    "commands and paths are not caller controlled",
+    "secrets are redacted from telemetry",
+    "required CI does not call a paid model"
+  ]
+}
