@@ -5,11 +5,15 @@ on:
     branches: [main]
     paths:
       - 'ai/**'
+      - 'integrations/ai-first-quality-agent/**'
+      - 'tools/ai/**'
       - 'package.json'
       - '.github/workflows/ai-quality.yml'
   pull_request:
     paths:
       - 'ai/**'
+      - 'integrations/ai-first-quality-agent/**'
+      - 'tools/ai/**'
       - 'package.json'
       - '.github/workflows/ai-quality.yml'
   workflow_dispatch:
@@ -39,6 +43,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Unit and security tests
         run: npm run ai:test
+      - name: Verify AI-first agent evidence contract
+        run: npm run ai:agent-evidence && node --test tools/ai/verify-agent-evidence.test.js
       - name: Labeled failure-triage evaluations
         run: npm run ai:eval
       - name: Requirements-to-test smoke check

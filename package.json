@@ -18,6 +18,7 @@
     "ai:test": "node --test ai/evals/genai.test.js",
     "ai:eval": "node ai/evals/run-evals.js",
     "ai:eval:live": "node ai/evals/run-evals.js --provider openai",
+    "ai:agent-evidence": "node tools/ai/verify-agent-evidence.js",
     "ai:triage": "node ai/src/failure-triage.js",
     "ai:generate-tests": "node ai/src/generate-tests.js",
     "lhci": "lhci autorun",
