@@ -18,7 +18,7 @@
     "@percy/cli": "^1.32.11",
     "@percy/playwright": "^1.0.8",
     "@playwright/test": "^1.51.1",
-    "@types/node": "^26.5.1",
+    "@types/node": "^26.6.5",
     "allure-commandline": "^2.46.1",
     "allure-playwright": "^3.12.2"
   }
