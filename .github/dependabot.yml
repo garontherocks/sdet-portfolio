@@ -17,6 +17,12 @@ updates:
           - '@eslint/*'
           - '@typescript-eslint/*'
           - 'typescript'
+    ignore:
+      # typescript-eslint 8.x declares peer typescript ">=4.8.4 <6.1.0".
+      # Grouping a TypeScript major with it breaks `npm ci` (see #33, #38).
+      # Remove once typescript-eslint supports the next TypeScript major.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
     open-pull-requests-limit: 5
 
   - package-ecosystem: github-actions
