@@ -9,6 +9,8 @@ npm ci
 npm run quality
 ```
 
+`npm ci` installs a Husky pre-commit hook that runs `eslint --fix` on staged JavaScript and TypeScript files through lint-staged. CI still runs the full ESLint check, so the hook is a fast local feedback loop, not a quality gate.
+
 Run the focused suites as needed:
 
 ```bash
