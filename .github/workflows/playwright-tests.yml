@@ -21,9 +21,15 @@ concurrency:
 
 jobs:
   playwright-run:
-    # Pinned: ubuntu-latest moved to 26.04 (Oct 2026), whose apt mirror
-    # trickles Playwright's system deps at KB/s and blows the 15-min cap.
     runs-on: ubuntu-24.04
+    # Run inside the official Playwright image: browsers and their system
+    # deps are preinstalled, so the job no longer depends on the Azure apt
+    # mirror, which has stalled `playwright install --with-deps` past its
+    # 15-minute cap on both ubuntu-26.04 and ubuntu-24.04.
+    # Keep the tag in sync with @playwright/test in package-lock.json.
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --user 1001
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -36,17 +42,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # apt mirror downloads for all three browsers' system deps have stalled
-      # indefinitely on ubuntu-latest. Bound each HTTP fetch and retry it, and
-      # cap the step so a stuck mirror fails fast instead of hanging the job.
-      - name: Configure apt network timeouts
-        run: |
-          printf 'Acquire::Retries "3";\nAcquire::http::Timeout "60";\nAcquire::https::Timeout "60";\n' \
-            | sudo tee /etc/apt/apt.conf.d/80-ci-network
-      - name: Install Playwright browsers and system dependencies
-        run: npx playwright install --with-deps
+      # No-op when the image matches @playwright/test; if a Dependabot bump
+      # gets ahead of the image tag, this fetches the browsers from the
+      # Playwright CDN (system deps are already in the image, no apt).
+      - name: Ensure Playwright browsers match the installed version
+        run: npx playwright install
         working-directory: playwright
-        timeout-minutes: 15
+        timeout-minutes: 10
       - name: Run Playwright shard
         run: npx playwright test --shard=${{ matrix.shard }}/2 --reporter=blob
         working-directory: playwright
