@@ -22,6 +22,7 @@ concurrency:
 jobs:
   playwright-run:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -33,8 +34,17 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps
+      # apt mirror downloads for all three browsers' system deps have stalled
+      # indefinitely on ubuntu-latest. Bound each HTTP fetch and retry it, and
+      # cap the step so a stuck mirror fails fast instead of hanging the job.
+      - name: Configure apt network timeouts
+        run: |
+          printf 'Acquire::Retries "3";\nAcquire::http::Timeout "60";\nAcquire::https::Timeout "60";\n' \
+            | sudo tee /etc/apt/apt.conf.d/80-ci-network
+      - name: Install Playwright browsers and system dependencies
+        run: npx playwright install --with-deps
         working-directory: playwright
+        timeout-minutes: 15
       - name: Run Playwright shard
         run: npx playwright test --shard=${{ matrix.shard }}/2 --reporter=blob
         working-directory: playwright
@@ -51,6 +61,7 @@ jobs:
     if: always()
     needs: playwright-run
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
