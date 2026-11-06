@@ -11,6 +11,7 @@
     "playwright"
   ],
   "scripts": {
+    "prepare": "husky",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p playwright/tsconfig.json",
     "quality": "npm run lint && npm run typecheck",
