@@ -5,21 +5,18 @@ updates:
     schedule:
       interval: monthly
     groups:
-      test-tooling:
+      # One monthly PR for every compatible (minor/patch) update.
+      # Major updates are left out of the group so each one arrives in its
+      # own PR and can be reviewed for breaking changes.
+      npm-minor-and-patch:
         patterns:
-          - '@playwright/*'
-          - '@percy/*'
-          - 'cypress'
-          - 'allure-*'
-      static-analysis:
-        patterns:
-          - 'eslint'
-          - '@eslint/*'
-          - '@typescript-eslint/*'
-          - 'typescript'
+          - '*'
+        update-types:
+          - minor
+          - patch
     ignore:
       # typescript-eslint 8.x declares peer typescript ">=4.8.4 <6.1.0".
-      # Grouping a TypeScript major with it breaks `npm ci` (see #33, #38).
+      # A TypeScript major breaks `npm ci` (see #33, #38).
       # Remove once typescript-eslint supports the next TypeScript major.
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
@@ -28,7 +25,7 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: monthly
+      interval: quarterly
     groups:
       github-actions:
         patterns:
