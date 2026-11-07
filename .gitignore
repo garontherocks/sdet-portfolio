@@ -27,6 +27,7 @@ reports/quality.json
 reports/ai-evals.json
 reports/ai-triage.json
 reports/ai-triage.md
+reports/previous-run-history.json
 reports/dashboards/index.html
 reports/dashboards/quality.json
 reports/dashboards/allure/

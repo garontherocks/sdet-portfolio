@@ -19,9 +19,11 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   outputDir: 'test-results',
+  // UI specs run in every browser; API specs only need the request fixture, so they run once.
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    { name: 'chromium', testIgnore: 'api/**', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', testIgnore: 'api/**', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', testIgnore: 'api/**', use: { ...devices['Desktop Safari'] } },
+    { name: 'api', testMatch: 'api/**/*.spec.ts' },
   ],
 });
