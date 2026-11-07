@@ -37,7 +37,7 @@ function buildUser(id) {
     id,
     name: `${first} ${last}`,
     email,
-    username: faker.internet.userName({ firstName: first, lastName: last }).toLowerCase(),
+    username: faker.internet.username({ firstName: first, lastName: last }).toLowerCase(),
     password: faker.internet.password({ length: 12 }),
     role,
     featureFlags,
