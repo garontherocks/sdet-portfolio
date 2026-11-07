@@ -123,7 +123,7 @@ The companion [AI-first quality agent](https://github.com/garontherocks/ai-first
 
 ## Quality dashboard
 
-`reports-hub.yml` generates Cypress, Playwright Chromium, Lighthouse and k6 evidence in the same job before aggregating it. The build fails if any required evidence is missing or violates its threshold. Successful `main` runs publish the current-run dashboard to GitHub Pages; historical trends are intentionally omitted until durable history is available.
+`reports-hub.yml` generates Cypress, Playwright Chromium, Lighthouse and k6 evidence in the same job before aggregating it. The build fails if any required evidence is missing or violates its threshold. Successful `main` runs publish the current-run dashboard to GitHub Pages, together with the [Allure report](https://garontherocks.github.io/sdet-portfolio/allure/), the [Mochawesome report](https://garontherocks.github.io/sdet-portfolio/cypress/) and a per-test [run feed](docs/run-feed.md) that [victoraller.vercel.app/quality-run](https://victoraller.vercel.app/quality-run) replays. Historical trends are intentionally omitted until durable history is available.
 
 ## Roadmap status
 
