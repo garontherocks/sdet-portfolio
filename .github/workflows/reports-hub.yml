@@ -15,8 +15,44 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  PAGES_URL: https://garontherocks.github.io/sdet-portfolio
+
 jobs:
+  # Browsers and their system deps come preinstalled in the official image (no apt step).
+  # Keep the tag in sync with @playwright/test in package-lock.json.
+  playwright-evidence:
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --user 1001
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Ensure Playwright browsers match the installed version
+        run: npx playwright install
+        working-directory: playwright
+        timeout-minutes: 10
+      - name: Playwright evidence (Chromium, Firefox, WebKit and API)
+        run: npx playwright test
+        working-directory: playwright
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-allure-results
+          retention-days: 7
+          path: playwright/allure-results/
+          if-no-files-found: error
+
   build-quality-evidence:
+    needs: playwright-evidence
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -32,12 +68,11 @@ jobs:
         if: always()
         run: npm run report:merge --workspace=cypress
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-        working-directory: playwright
-      - name: Playwright evidence
-        run: npx playwright test --project=chromium
-        working-directory: playwright
+      - name: Download Playwright evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: playwright-allure-results
+          path: playwright/allure-results
 
       - name: Lighthouse evidence
         run: npm run lhci
@@ -73,14 +108,31 @@ jobs:
 
       # Published next to the dashboard: /allure/, /cypress/ and /run/latest.json.
       # run/latest.json is a public contract (docs/run-feed.md) read by victoraller.vercel.app.
+      # Carry history over from the currently published site, so Allure trends and the
+      # run history survive between runs (Pages is deployed from an artifact, not a branch).
+      - name: Restore published history
+        if: always()
+        run: |
+          mkdir -p playwright/allure-results/history
+          for file in history.json history-trend.json duration-trend.json categories-trend.json retry-trend.json; do
+            curl -fsSL "$PAGES_URL/allure/history/$file" -o "playwright/allure-results/history/$file" || rm -f "playwright/allure-results/history/$file"
+          done
+          curl -fsSL "$PAGES_URL/run/history.json" -o reports/previous-run-history.json || rm -f reports/previous-run-history.json
+      - name: Describe the run for Allure
+        if: always()
+        run: |
+          cat > playwright/allure-results/executor.json <<JSON
+          {"name":"GitHub Actions","type":"github","buildOrder":${{ github.run_number }},"buildName":"Run #${{ github.run_number }}","buildUrl":"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}","reportUrl":"$PAGES_URL/allure/","reportName":"sdet-portfolio"}
+          JSON
+          printf 'UI=https://www.saucedemo.com\nAPI=https://reqres.in\nBrowsers=Chromium, Firefox, WebKit\nRunner=%s %s\nNode=%s\nCommit=%s\n' "$RUNNER_OS" "$RUNNER_ARCH" "$(node --version)" "${{ github.sha }}" > playwright/allure-results/environment.properties
       - name: Publish Allure and Mochawesome reports
         if: always()
         run: |
           npx allure generate playwright/allure-results -o reports/dashboards/allure --clean
           npx marge cypress/reports/mochawesome/merged.json -o reports/dashboards/cypress -f index --inline
-      - name: Build per-test run feed
+      - name: Build per-test run feed and history
         if: always()
-        run: node reports/aggregator/build-run-feed.js reports/dashboards/run/latest.json
+        run: node reports/aggregator/build-run-feed.js reports/dashboards/run --previous-history reports/previous-run-history.json
       - name: Upload complete quality evidence
         if: always()
         uses: actions/upload-artifact@v7
