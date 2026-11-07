@@ -28,6 +28,10 @@ reports/ai-evals.json
 reports/ai-triage.json
 reports/ai-triage.md
 reports/dashboards/index.html
+reports/dashboards/quality.json
+reports/dashboards/allure/
+reports/dashboards/cypress/
+reports/dashboards/run/
 
 # Lighthouse and Percy
 .lighthouseci/

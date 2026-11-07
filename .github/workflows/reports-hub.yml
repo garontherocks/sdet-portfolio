@@ -70,6 +70,17 @@ jobs:
         run: |
           cp reports/dashboards/dashboard.html reports/dashboards/index.html
           cp reports/quality.json reports/dashboards/quality.json
+
+      # Published next to the dashboard: /allure/, /cypress/ and /run/latest.json.
+      # run/latest.json is a public contract (docs/run-feed.md) read by victoraller.vercel.app.
+      - name: Publish Allure and Mochawesome reports
+        if: always()
+        run: |
+          npx allure generate playwright/allure-results -o reports/dashboards/allure --clean
+          npx marge cypress/reports/mochawesome/merged.json -o reports/dashboards/cypress -f index --inline
+      - name: Build per-test run feed
+        if: always()
+        run: node reports/aggregator/build-run-feed.js reports/dashboards/run/latest.json
       - name: Upload complete quality evidence
         if: always()
         uses: actions/upload-artifact@v7

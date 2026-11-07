@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p playwright/tsconfig.json",
     "quality": "npm run lint && npm run typecheck",
-    "test:aggregator": "node --test reports/aggregator/combine-metrics.test.js",
+    "test:aggregator": "node --test reports/aggregator/combine-metrics.test.js reports/aggregator/build-run-feed.test.js",
     "ai:test": "node --test ai/evals/genai.test.js",
     "ai:eval": "node ai/evals/run-evals.js",
     "ai:eval:live": "node ai/evals/run-evals.js --provider openai",

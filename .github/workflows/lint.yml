@@ -37,3 +37,5 @@ jobs:
         run: npm run lint
       - name: TypeScript typecheck
         run: npm run typecheck
+      - name: Report tooling tests
+        run: npm run test:aggregator
